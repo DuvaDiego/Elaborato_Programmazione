@@ -12,12 +12,13 @@ public:
 
     std::string getSender() const;
 
+    //FIXME: vanno sistemti i metodi getter e setter del destinatario (anche le definizioni)
     SecondaryUser* getRecipient() const;
     void setRecipient(SecondaryUser* newRecipient);
 
 private:
     const std::string sender;
-    SecondaryUser* recipient;
+    SecondaryUser* recipient; //FIXME: trattandosi di un nome dovrebbe essere una stringa, non un SecondaryUser*
 };
 
 

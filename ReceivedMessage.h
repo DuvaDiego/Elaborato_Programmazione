@@ -10,13 +10,14 @@ public:
     ReceivedMessage(std::string t, bool imp, SecondaryUser* s, std::string r = "Diego");
     ~ReceivedMessage() override = default;
 
+    //FIXME: vanno sistemti i metodi getter e setter del mittente (anche le definizioni)
     SecondaryUser* getSender() const;
     void setSender(SecondaryUser* newSender);
 
     std::string getRecipient() const;
 
 private:
-    SecondaryUser* sender;
+    SecondaryUser* sender; //FIXME: trattandosi di un nome dovrebbe essere una stringa, non un SecondaryUser*
     const std::string recipient;
 };
 
