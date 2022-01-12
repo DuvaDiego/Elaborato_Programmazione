@@ -5,7 +5,7 @@
 class User {
 public:
     User() = default;
-    ~User() = default;
+    virtual ~User() = 0;
 };
 
 
