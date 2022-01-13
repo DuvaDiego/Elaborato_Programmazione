@@ -6,7 +6,7 @@
 class User {
 public:
     explicit User(std::string name);
-    virtual ~User() = 0;
+    virtual ~User() = default;
 
     std::string getName() const;
     void setName(std::string newNickName);

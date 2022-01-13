@@ -6,7 +6,6 @@
 class SecondaryUser : public User{
 public:
     SecondaryUser(bool f, std::string name);
-    ~SecondaryUser() override = default;
 
     bool isFavourite() const;
     void setFavouritism(bool favouritism);

@@ -7,7 +7,7 @@
 class PrimaryUser : public User{
 public:
     explicit PrimaryUser(ChatRegister* reg, std::string name = "Diego");
-    ~PrimaryUser() override = default;
+    ~PrimaryUser() override;
 
     void writeRegister() const;
 
