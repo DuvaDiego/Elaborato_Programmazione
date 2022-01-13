@@ -8,11 +8,11 @@
 class ChatRegister {
 public:
     explicit ChatRegister(std::list<Chat*> list, std::string o = "Diego");
-    ~ChatRegister() = default;
+    ~ChatRegister() {}
 
-    void getChatList();
+    void getChatList() const;
 
-    std::string getOwner();
+    std::string getOwner() const;
 
 private:
     std::list<Chat*> chatList;

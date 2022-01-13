@@ -2,11 +2,17 @@
 #define ELABORATO_PROGRAMMAZIONE_PRIMARYUSER_H
 
 #include "User.h"
+#include "ChatRegister.h"
 
 class PrimaryUser : public User{
 public:
-    PrimaryUser() = default;
+    explicit PrimaryUser(ChatRegister* reg, std::string name = "Diego");
     ~PrimaryUser() override = default;
+
+    void writeRegister() const;
+
+private:
+    ChatRegister* theRegister;
 };
 
 
