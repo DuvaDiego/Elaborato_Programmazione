@@ -1,7 +1,13 @@
 #include "Chat.h"
 
 Chat::Chat(std::string name, std::list<Message *> list, SecondaryUser *u, bool b) : messagesList(move(list)), user(u), blocked(b) {
-//TODO inizializzare name con user->nickname
+//FIXME user dovrebbe essere una string, quindi sistemare l'iniziazione di name
+    name = user->getName();
+}
+
+Chat::~Chat() {
+    for (auto& message : messagesList)
+        delete message;
 }
 
 std::string Chat::getName() const {

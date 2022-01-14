@@ -8,7 +8,7 @@
 class ChatRegister {
 public:
     explicit ChatRegister(std::list<Chat*> list, std::string o = "Diego");
-    ~ChatRegister() {}
+    ~ChatRegister();
 
     void getChatList() const;
 

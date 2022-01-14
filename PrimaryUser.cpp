@@ -4,8 +4,7 @@ PrimaryUser::PrimaryUser(ChatRegister *reg, std::string name) : theRegister(reg)
 }
 
 PrimaryUser::~PrimaryUser() {
-    if (theRegister != nullptr)
-        delete theRegister;
+    delete theRegister;
 }
 
 void PrimaryUser::writeRegister() const {

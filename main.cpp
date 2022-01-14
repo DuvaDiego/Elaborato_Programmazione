@@ -15,18 +15,19 @@ int main() {
     ChatRegister* WhatsApp = new ChatRegister(chatList);
     std::unique_ptr<PrimaryUser> Diego (new PrimaryUser(WhatsApp));
 
-    char c;
-    while (std::cin.get(c)) {
-        std::cin.ignore(100, '\n');
-        switch (c) {
-            case 'Q':
-                std::cout << "Non Hai detto:" << c <<std::endl;
-                return 0;
-            case 'c':
-                std::cout << "Hai detto:" << c <<std::endl;
-                return 0;
-            default:
-                return 0;
+    while (true) {
+        char c;
+        while (std::cin.get(c)) {
+            std::cin.ignore(100, '\n');
+            switch (c) {
+                case 'Q':
+                    std::cout << "Fine" << std::endl;
+                    return 0;
+                case 'c':
+                    std::cout << "Hai detto:" << c << std::endl;
+                default:
+                    break;
+            }
         }
     }
 }

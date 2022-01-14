@@ -9,7 +9,7 @@
 class Chat {
 public:
     Chat(std::string name, std::list<Message*> list, SecondaryUser* u, bool b = false);
-    ~Chat() = default;
+    ~Chat();
 
     std::string getName() const;
     void setName(std::string newName);
@@ -19,7 +19,7 @@ public:
 
     void getChatMessages() const;
 
-    //FIXME: vanno sistemti i metodi getter e setter dell'utente secondario (anche le definizioni)
+    //FIXME: vanno sistemati i metodi getter e setter dell'utente secondario (anche le definizioni)
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
 
