@@ -1,7 +1,7 @@
 #include "Chat.h"
 
 Chat::Chat(std::string name, std::list<Message *> list, SecondaryUser *u, bool b) : messagesList(move(list)), user(u), blocked(b) {
-//FIXME user dovrebbe essere una string, quindi sistemare l'iniziazione di name
+//FIXME: user dovrebbe essere una string, quindi sistemare l'iniziazione di name
     name = user->getName();
 }
 

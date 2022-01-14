@@ -26,7 +26,7 @@ public:
 private:
     std::string nameChat;
     bool blocked;
-    std::list<Message*> messagesList; //TODO aggiungere i nuovi messaggi in testa alla lista
+    std::list<Message*> messagesList; //TODO: aggiungere i nuovi messaggi in testa alla lista
     SecondaryUser* user;
 };
 
