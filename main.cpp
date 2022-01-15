@@ -14,21 +14,21 @@ enum class Action {
     getReg, create, remove, favourites, write, setImp, quit, noAction
 };
 
-Action getUserAction(std::string str) {  //FIXME: considerare che non tutte le azioni si possono fare sempre
-    if (str[1] == '.') {
-        char c = str[0];
+Action getUserAction(std::string firstWord) {  //FIXME: considerare che non tutte le azioni si possono fare sempre
+    if (firstWord[1] == '|') {
+        char c = firstWord[0];
         switch (c) {
-            case 'q':
+            case 'Q':
                 return Action::quit;
-            case 's':
+            case 'I':
                 return Action::setImp;
-            case 'f':
+            case 'F':
                 return Action::favourites;
-            case 'c':
+            case 'C':
                 return Action::create;
-            case 'r':
+            case 'D':
                 return Action::remove;
-            case 'g':
+            case 'R':
                 return Action::getReg;
             default:
                 return Action::noAction;
@@ -38,7 +38,7 @@ Action getUserAction(std::string str) {  //FIXME: considerare che non tutte le a
     }
 }
 
-bool doUserAction(Action &action, std::string &str) { //TODO: sviluppare ogni azione
+bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: sviluppare ogni azione
     switch (action) {
         case Action::quit:
             return true;
@@ -57,9 +57,23 @@ bool doUserAction(Action &action, std::string &str) { //TODO: sviluppare ogni az
         case Action::getReg:
             std::cout << "Registro: ..." << std::endl;
             break;
-        case Action::write:
-            std::cout << "Diego: " << str << std::endl;
+        case Action::write: {
+            if (message.front().front() != '|') {
+                std::string lastWord = message.back();
+                message.pop_back();
+                lastWord.pop_back();
+                message.push_back(lastWord);
+
+                std::cout << "Diego: " << std::flush;
+                for (auto &word: message) {
+                    std::cout << word << ' ' << std::flush;
+                    if (word.back() == '|')
+                        break;
+                }
+                std::cout << std::endl;
+            }
             break;
+        }
         case Action::noAction:
             std::cout << "..." << std::endl;
             break;
@@ -74,11 +88,19 @@ int main() {
     //std::unique_ptr<PrimaryUser> Diego (new PrimaryUser(WhatsApp));
 
     while (true) {
-        std::string input;  //FIXME: se scrivo due parole mi considera due stringhe diverse
-        std::cin >> input;  //capire come funziona std::cin altrimenti usare _ al posto degli spazi
+        std::list<std::string> message;
+        std::string input;
+        bool stop = false;
 
-        Action action = getUserAction(input);
-        bool quit =doUserAction(action, input);
+        while (!stop) {
+            std::cin >> input;
+            message.push_back(input);
+            if (input.back() == '|')
+                stop = true;
+        }
+
+        Action action = getUserAction(message.front());
+        bool quit =doUserAction(action, message);
 
         if (quit)
             return 0;
