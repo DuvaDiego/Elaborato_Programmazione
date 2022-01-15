@@ -11,7 +11,7 @@
 #include "ReceivedMessage.h"
 
 enum class Action {
-    getReg, create, remove, favourites, write, setImp, quit, noAction
+    getReg, create, remove, select, favourites, write, setImp, quit, noAction
 };
 
 Action getUserAction(std::string firstWord) {  //FIXME: considerare che non tutte le azioni si possono fare sempre
@@ -28,6 +28,8 @@ Action getUserAction(std::string firstWord) {  //FIXME: considerare che non tutt
                 return Action::create;
             case 'D':
                 return Action::remove;
+            case 'S':
+                return Action::select;
             case 'R':
                 return Action::getReg;
             default:
@@ -53,6 +55,9 @@ bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: svi
             break;
         case Action::remove:
             std::cout << "Chat eliminata." << std::endl;
+            break;
+        case Action::select:
+            std::cout << "Chat selezionata." << std::endl;
             break;
         case Action::getReg:
             std::cout << "Registro: ..." << std::endl;
@@ -82,11 +87,25 @@ bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: svi
     return false;
 }
 
-int main() {
-    //std::list<Chat*> chatList;
-    //ChatRegister* WhatsApp = new ChatRegister(chatList);
-    //std::unique_ptr<PrimaryUser> Diego (new PrimaryUser(WhatsApp));
+void tellInstructions(ChatRegister* reg) {
+    bool notEmpty = reg->getChatList();
+    if (notEmpty) {
+        std::cout << "Digitare:" << std::endl;
+        std::cout << "- R| per la lista chat" << std::endl;
+        std::cout << "- S| per selezionare una chat" << std::endl;
+        std::cout << "- C| per creare una chat" << std::endl;
+        std::cout << "- D| per eliminare una chat" << std::endl;
+        std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
+        std::cout << "- Q| per uscire" << std::endl;
+    }  //TODO: aggiungere istruzioni per quando ci si trova dentro una chat
+}
 
+int main() {
+    std::list<Chat*> chatList;
+    ChatRegister* WhatsApp = new ChatRegister(chatList);
+    std::unique_ptr<PrimaryUser> Diego (new PrimaryUser(WhatsApp));
+
+    tellInstructions(WhatsApp);
     while (true) {
         std::list<std::string> message;
         std::string input;

@@ -8,9 +8,16 @@ ChatRegister::~ChatRegister() {
         delete chat;
 }
 
-void ChatRegister::getChatList() const {
-    for (auto& chat : chatList)
-        std::cout << chat->getName() << std::endl; //TODO: aggiungere la caratteristica delle chat preferite che compaiono in cima al registro
+bool ChatRegister::getChatList() const {
+    if (chatList.empty()) {
+        std::cout << "\n Il registro al momento e' vuoto. Digitare - C| per creare una chat." << std::endl;
+        return false;
+    }
+    else {
+        for (auto &chat: chatList)
+            std::cout << chat->getName() << std::endl; //TODO: aggiungere la caratteristica delle chat preferite che compaiono in cima al registro
+        return true;
+    }
 }
 
 std::string ChatRegister::getOwner() const {

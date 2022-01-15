@@ -10,7 +10,7 @@ public:
     explicit ChatRegister(std::list<Chat*> list, std::string o = "Diego");
     ~ChatRegister();
 
-    void getChatList() const;
+    bool getChatList() const;
 
     std::string getOwner() const;
 
