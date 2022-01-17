@@ -8,7 +8,7 @@
 
 class Chat {
 public:
-    Chat(std::string name, std::list<Message*> list, SecondaryUser* u, bool b = false);
+    explicit Chat(SecondaryUser* u, bool b = false);
     ~Chat();
 
     std::string getName() const;
@@ -19,7 +19,6 @@ public:
 
     void getChatMessages() const;
 
-    //FIXME: vanno sistemati i metodi getter e setter dell'utente secondario (anche le definizioni)
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
 

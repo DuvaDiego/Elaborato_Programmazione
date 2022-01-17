@@ -5,7 +5,7 @@
 
 class SecondaryUser : public User{
 public:
-    SecondaryUser(bool f, std::string name);
+    SecondaryUser(std::string name, bool f = false);
 
     bool isFavourite() const;
     void setFavouritism(bool favouritism);

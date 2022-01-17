@@ -11,6 +11,8 @@ public:
     ~ChatRegister();
 
     bool getChatList() const;
+    bool isEmptyList() const;
+    void addInChatList(Chat* newChat);
 
     std::string getOwner() const;
 

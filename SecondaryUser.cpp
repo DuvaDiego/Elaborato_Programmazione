@@ -1,6 +1,6 @@
 #include "SecondaryUser.h"
 
-SecondaryUser::SecondaryUser(bool f, std::string name) : favourite(f), User(move(name)) {
+SecondaryUser::SecondaryUser(std::string name, bool f) : User(move(name)), favourite(f) {
 }
 
 bool SecondaryUser::isFavourite() const {

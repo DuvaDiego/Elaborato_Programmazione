@@ -14,7 +14,7 @@ enum class Action {
     getReg, create, remove, select, favourites, write, setImp, quit, noAction
 };
 
-Action getUserAction(std::string firstWord) {  //FIXME: considerare che non tutte le azioni si possono fare sempre
+Action getUserAction(std::string firstWord) {
     if (firstWord[1] == '|') {
         char c = firstWord[0];
         switch (c) {
@@ -40,8 +40,41 @@ Action getUserAction(std::string firstWord) {  //FIXME: considerare che non tutt
     }
 }
 
-bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: sviluppare ogni azione
+void tellInstructions(ChatRegister* reg) {
+    bool empty = reg->isEmptyList();
+    if (!empty) {
+        std::cout << "Digitare:" << std::endl;
+        std::cout << "- R| per la lista chat" << std::endl;
+        std::cout << "- C| per creare una chat" << std::endl;
+        std::cout << "- S| per selezionare una chat" << std::endl;
+        std::cout << "- D| per eliminare una chat" << std::endl;
+        std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
+        std::cout << "- I| per mettere tra i messaggi importanti un messaggio" << std::endl;
+        std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
+        std::cout << "- Q| per uscire" << std::endl;
+
+        //TODO: aggiungere nome della Chat in cui ci si trova
+    }
+}
+
+bool doUserAction(User* user,Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
+    //bool notEmpty = reg->getChatList(); FIXME: considerare che non tutte le azioni si possono fare sempre
     switch (action) {
+        case Action::getReg:
+            std::cout << "Registro: ..." << std::endl;
+            break;
+        case Action::create: {
+            std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
+            std::string namePerson;
+            std::cin >> namePerson;
+            SecondaryUser* aPerson = new SecondaryUser(namePerson);
+
+            Chat* aChat = new Chat(aPerson);
+            reg->addInChatList(aChat);
+
+            tellInstructions(reg);
+            break;
+        }
         case Action::quit:
             return true;
         case Action::setImp:
@@ -50,17 +83,11 @@ bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: svi
         case Action::favourites:
             std::cout << "Messo tra i preferiti." << std::endl;
             break;
-        case Action::create:
-            std::cout << "Nuova Chat creata." << std::endl;
-            break;
         case Action::remove:
             std::cout << "Chat eliminata." << std::endl;
             break;
         case Action::select:
             std::cout << "Chat selezionata." << std::endl;
-            break;
-        case Action::getReg:
-            std::cout << "Registro: ..." << std::endl;
             break;
         case Action::write: {
             if (message.front().front() != '|') {
@@ -69,7 +96,7 @@ bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: svi
                 lastWord.pop_back();
                 message.push_back(lastWord);
 
-                std::cout << "Diego: " << std::flush;
+                std::cout << user->getName() << ": " << std::flush;
                 for (auto &word: message) {
                     std::cout << word << ' ' << std::flush;
                     if (word.back() == '|')
@@ -83,27 +110,13 @@ bool doUserAction(Action &action, std::list<std::string> &message) { //TODO: svi
             std::cout << "..." << std::endl;
             break;
     }
-
     return false;
-}
-
-void tellInstructions(ChatRegister* reg) {
-    bool notEmpty = reg->getChatList();
-    if (notEmpty) {
-        std::cout << "Digitare:" << std::endl;
-        std::cout << "- R| per la lista chat" << std::endl;
-        std::cout << "- S| per selezionare una chat" << std::endl;
-        std::cout << "- C| per creare una chat" << std::endl;
-        std::cout << "- D| per eliminare una chat" << std::endl;
-        std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
-        std::cout << "- Q| per uscire" << std::endl;
-    }  //TODO: aggiungere istruzioni per quando ci si trova dentro una chat
 }
 
 int main() {
     std::list<Chat*> chatList;
     ChatRegister* WhatsApp = new ChatRegister(chatList);
-    std::unique_ptr<PrimaryUser> Diego (new PrimaryUser(WhatsApp));
+    PrimaryUser* Diego (new PrimaryUser(WhatsApp));
 
     tellInstructions(WhatsApp);
     while (true) {
@@ -111,6 +124,7 @@ int main() {
         std::string input;
         bool stop = false;
 
+        //TODO: impostare sistema di chatting alternato tra le due persone
         while (!stop) {
             std::cin >> input;
             message.push_back(input);
@@ -119,7 +133,7 @@ int main() {
         }
 
         Action action = getUserAction(message.front());
-        bool quit =doUserAction(action, message);
+        bool quit =doUserAction(Diego ,action, WhatsApp, message);
 
         if (quit)
             return 0;
