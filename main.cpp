@@ -43,7 +43,7 @@ Action getUserAction(std::string firstWord) {
 void tellInstructions(ChatRegister* reg) {
     bool empty = reg->isEmptyList();
     if (!empty) {
-        std::cout << "Digitare:" << std::endl;
+        std::cout << "\nDigitare:" << std::endl;
         std::cout << "- R| per la lista chat" << std::endl;
         std::cout << "- C| per creare una chat" << std::endl;
         std::cout << "- S| per selezionare una chat" << std::endl;
@@ -57,17 +57,13 @@ void tellInstructions(ChatRegister* reg) {
     }
 }
 
-bool doUserAction(User* user,Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
-    //bool notEmpty = reg->getChatList(); FIXME: considerare che non tutte le azioni si possono fare sempre
+bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
     switch (action) {
-        case Action::getReg:
-            std::cout << "Registro: ..." << std::endl;
-            break;
         case Action::create: {
             std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
-            std::string namePerson;
-            std::cin >> namePerson;
-            SecondaryUser* aPerson = new SecondaryUser(namePerson);
+            std::string person;
+            std::cin >> person;
+            SecondaryUser* aPerson = new SecondaryUser(person);
 
             Chat* aChat = new Chat(aPerson);
             reg->addInChatList(aChat);
@@ -75,40 +71,51 @@ bool doUserAction(User* user,Action &action, ChatRegister* reg, std::list<std::s
             tellInstructions(reg);
             break;
         }
-        case Action::quit:
+        case Action::quit: {
+            std::cout << "\nProgramma chiuso, registro eliminato." << std::endl;
             return true;
-        case Action::setImp:
-            std::cout << "Importanza impostata." << std::endl;
-            break;
-        case Action::favourites:
-            std::cout << "Messo tra i preferiti." << std::endl;
-            break;
-        case Action::remove:
-            std::cout << "Chat eliminata." << std::endl;
-            break;
-        case Action::select:
-            std::cout << "Chat selezionata." << std::endl;
-            break;
-        case Action::write: {
-            if (message.front().front() != '|') {
-                std::string lastWord = message.back();
-                message.pop_back();
-                lastWord.pop_back();
-                message.push_back(lastWord);
+        }
+        default: {
+            bool empty = reg->isEmptyList();
+            if (!empty) {
+                switch (action) {
+                    case Action::getReg: {
+                        reg->getChatList();
+                        break;
+                    }
+                    case Action::select:
+                        std::cout << "Chat selezionata." << std::endl;
+                        break;
+                    case Action::remove:
+                        std::cout << "Chat eliminata." << std::endl;
+                        break;
+                    case Action::favourites:
+                        std::cout << "Messo tra i preferiti." << std::endl;
+                        break;
+                    case Action::setImp:
+                        std::cout << "Importanza impostata." << std::endl;
+                        break;
+                    case Action::write: {
+                        if (message.front().front() != '|') {
+                            std::string lastWord = message.back();
+                            message.pop_back();
+                            lastWord.pop_back();
+                            message.push_back(lastWord);
 
-                std::cout << user->getName() << ": " << std::flush;
-                for (auto &word: message) {
-                    std::cout << word << ' ' << std::flush;
-                    if (word.back() == '|')
+                            std::cout << user->getName() << ": " << std::flush;
+                            for (auto &word: message) {
+                                std::cout << word << ' ' << std::flush;
+                            }
+                            std::cout << std::endl;
+                        }
+                        break;
+                    }
+                    case Action::noAction:
+                        std::cout << "..." << std::endl;
                         break;
                 }
-                std::cout << std::endl;
             }
-            break;
         }
-        case Action::noAction:
-            std::cout << "..." << std::endl;
-            break;
     }
     return false;
 }

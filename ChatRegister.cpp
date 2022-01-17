@@ -13,8 +13,9 @@ bool ChatRegister::getChatList() const {
         return false;
     }
     else {
+        std::cout << "\nRegistro Chat:" << std::endl;
         for (auto &chat: chatList)
-            std::cout << chat->getName() << std::endl; //TODO: aggiungere la caratteristica delle chat preferite che compaiono in cima al registro
+            std::cout << "- " << chat->getName() << std::endl; //TODO: aggiungere la caratteristica delle chat preferite che compaiono in cima al registro
         return true;
     }
 }
