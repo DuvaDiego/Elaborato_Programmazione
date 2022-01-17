@@ -86,16 +86,32 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                         reg->getChatList();
                         break;
                     }
-                    case Action::select:
-                        std::cout << "Chat selezionata." << std::endl;
-                        break;
-                    case Action::remove: {
-                        Chat* current = reg->getCurrent();
-                        std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
-                        current = reg->removeChat(current);
+                    case Action::select: {
+                        reg->getChatList();
+                        std::cout << "Seleziona una Chat scrivendo il suo nome:" << std::flush;
+                        std::string nameChat;
+                        std::cin >> nameChat;
 
-                        if(!reg->isEmpty())
-                            reg->setCurrent(current);
+                        Chat* newCurrent = reg->searchChat(nameChat);
+                        reg->setCurrent(newCurrent);
+                        std::cout << "\nChat '" << newCurrent->getName() << "_' selezionata." << std::endl;
+
+                        tellInstructions(reg);
+                        break;
+                    }
+                    case Action::remove: {
+                        if(!reg->isEmpty()) {
+                            Chat* current = reg->getCurrent();
+                            std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
+
+                            Chat* newCurrent = nullptr;
+                            reg->removeChat(current, newCurrent);
+
+                            reg->setCurrent(newCurrent);
+                            if (newCurrent != nullptr)        //FIXME: non funziona la rimozione della chat singola
+                                std::cout << "\nSei nella chat '" << newCurrent->getName() << "_'." << std::endl;
+
+                        }
 
                         tellInstructions(reg);
                         break;

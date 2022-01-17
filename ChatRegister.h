@@ -13,7 +13,8 @@ public:
     bool getChatList() const;
     bool isEmpty() const;
     void addInChatList(Chat* newChat);
-    Chat* removeChat(Chat* aChat);
+    void removeChat(Chat* current, Chat* newCurrent);
+    Chat* searchChat(std::string& nameChat);
 
     Chat* getCurrent() const;
     void setCurrent(Chat* newCurrent);

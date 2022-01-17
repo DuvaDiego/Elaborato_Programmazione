@@ -28,13 +28,23 @@ bool ChatRegister::isEmpty() const {
 
 void ChatRegister::addInChatList(Chat *newChat) {
     chatList.push_front(newChat);
-    std::cout << "\nChat '" << newChat->getName() << "_' aggiunta al registro." << std::endl;
+    std::cout << "\nSei nella chat '" << newChat->getName() << "_' appena aggiunta al registro." << std::endl;
 }
 
-Chat* ChatRegister::removeChat(Chat *aChat) {
-    chatList.remove(aChat);
-    delete aChat;
-    return chatList.front();
+void ChatRegister::removeChat(Chat *current, Chat *newCurrent) {
+    chatList.remove(current);
+    delete current;
+    if (!isEmpty())
+        *newCurrent = chatList.front();
+}
+
+Chat *ChatRegister::searchChat(std::string& nameChat) {
+    for (auto& chat : chatList) {
+        if (chat->getName() == nameChat)
+            return chat;
+    }
+    std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::endl;
+    return currentChat;
 }
 
 Chat *ChatRegister::getCurrent() const {
