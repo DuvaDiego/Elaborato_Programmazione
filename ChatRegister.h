@@ -11,13 +11,18 @@ public:
     ~ChatRegister();
 
     bool getChatList() const;
-    bool isEmptyList() const;
+    bool isEmpty() const;
     void addInChatList(Chat* newChat);
+    Chat* removeChat(Chat* aChat);
+
+    Chat* getCurrent() const;
+    void setCurrent(Chat* newCurrent);
 
     std::string getOwner() const;
 
 private:
     std::list<Chat*> chatList;
+    Chat* currentChat;
     std::string owner;
 };
 

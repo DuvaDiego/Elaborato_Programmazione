@@ -9,7 +9,7 @@ ChatRegister::~ChatRegister() {
 }
 
 bool ChatRegister::getChatList() const {
-    if (isEmptyList()) {
+    if (isEmpty()) {
         return false;
     }
     else {
@@ -20,19 +20,29 @@ bool ChatRegister::getChatList() const {
     }
 }
 
-bool ChatRegister::isEmptyList() const {
-    if (chatList.empty()) {
-        std::cout << "\n Il registro al momento e' vuoto. Digitare:" << std::endl;
-        std::cout << "- C| per creare una chat" << std::endl;
-        std::cout << "- Q| per ucire" << std::endl;
+bool ChatRegister::isEmpty() const {
+    if (chatList.empty())
         return true;
-    }
     return false;
 }
 
 void ChatRegister::addInChatList(Chat *newChat) {
     chatList.push_front(newChat);
     std::cout << "\nChat '" << newChat->getName() << "_' aggiunta al registro." << std::endl;
+}
+
+Chat* ChatRegister::removeChat(Chat *aChat) {
+    chatList.remove(aChat);
+    delete aChat;
+    return chatList.front();
+}
+
+Chat *ChatRegister::getCurrent() const {
+    return currentChat;
+}
+
+void ChatRegister::setCurrent(Chat *newCurrent) {
+    currentChat = newCurrent;
 }
 
 std::string ChatRegister::getOwner() const {

@@ -41,19 +41,22 @@ Action getUserAction(std::string firstWord) {
 }
 
 void tellInstructions(ChatRegister* reg) {
-    bool empty = reg->isEmptyList();
-    if (!empty) {
+    if (!reg->isEmpty()) {
         std::cout << "\nDigitare:" << std::endl;
         std::cout << "- R| per la lista chat" << std::endl;
         std::cout << "- C| per creare una chat" << std::endl;
         std::cout << "- S| per selezionare una chat" << std::endl;
-        std::cout << "- D| per eliminare una chat" << std::endl;
+        std::cout << "- D| per eliminare l'attuale chat" << std::endl;
         std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
         std::cout << "- I| per mettere tra i messaggi importanti un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
         std::cout << "- Q| per uscire" << std::endl;
 
         //TODO: aggiungere nome della Chat in cui ci si trova
+    } else {
+        std::cout << "\n Il registro al momento e' vuoto. Digitare:" << std::endl;
+        std::cout << "- C| per creare una chat" << std::endl;
+        std::cout << "- Q| per ucire" << std::endl;
     }
 }
 
@@ -67,6 +70,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
 
             Chat* aChat = new Chat(aPerson);
             reg->addInChatList(aChat);
+            reg->setCurrent(aChat);
 
             tellInstructions(reg);
             break;
@@ -76,8 +80,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
             return true;
         }
         default: {
-            bool empty = reg->isEmptyList();
-            if (!empty) {
+            if (!reg->isEmpty()) {
                 switch (action) {
                     case Action::getReg: {
                         reg->getChatList();
@@ -86,9 +89,17 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                     case Action::select:
                         std::cout << "Chat selezionata." << std::endl;
                         break;
-                    case Action::remove:
-                        std::cout << "Chat eliminata." << std::endl;
+                    case Action::remove: {
+                        Chat* current = reg->getCurrent();
+                        std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
+                        current = reg->removeChat(current);
+
+                        if(!reg->isEmpty())
+                            reg->setCurrent(current);
+
+                        tellInstructions(reg);
                         break;
+                    }
                     case Action::favourites:
                         std::cout << "Messo tra i preferiti." << std::endl;
                         break;
