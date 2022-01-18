@@ -1,7 +1,13 @@
 #include "SentMessage.h"
 
-SentMessage::SentMessage(std::list<std::string> &t, std::string r, bool imp, std::string s) : Message(t, imp), recipient(move(r)), sender(move(s)) {
+SentMessage::SentMessage(std::list<std::string> &t, std::string r, bool imp) : Message(t, imp), recipient(move(r)) {
 
+}
+
+void SentMessage::getText() const {
+    std::cout << sender << ": " << std::flush;
+    for (auto& word : text)
+        std::cout << word << " " << std::flush;
 }
 
 std::string SentMessage::getSender() const {
@@ -14,10 +20,4 @@ std::string SentMessage::getRecipient() const {
 
 void SentMessage::setRecipient(std::string newRecipient) {
     recipient = move(newRecipient);
-}
-
-void SentMessage::getText() const {
-    std::cout << sender << ": " << std::flush;
-    for (auto& word : text)
-        std::cout << word << " " << std::flush;
 }

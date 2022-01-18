@@ -28,9 +28,24 @@ void Chat::setBlock(bool newSetup) {
 }
 
 void Chat::getChatMessages() const {
-    for (auto& messages : messagesList) {
-        messages->getText();
+    if (messagesList.empty()) {
+        std::cout << "\nUltimi 10 messaggi della Chat:" << std::endl;
+        for (auto &messages: messagesList) {
+            std::cout << "\n- " << std::flush;
+            messages->getText();
+        }
+    } else
+        std::cout << "\nLa Chat e' vuota." << std::endl;
+}
+
+void Chat::writeMessage(Message *newMessage) {
+    if (messagesList.size() == maxSavedMessage) {
+        messagesList.pop_front();
     }
+    messagesList.push_back(newMessage);
+
+    newMessage->getText();
+    std::cout << std::endl;
 }
 
 SecondaryUser *Chat::getUser() const {

@@ -18,6 +18,7 @@ public:
     void setBlock(bool newSetup);
 
     void getChatMessages() const;
+    void writeMessage(Message* newMessage);
 
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
@@ -28,7 +29,8 @@ public:
 private:
     std::string nameChat;
     bool blocked;
-    std::array<Message*, 10> messagesList; //TODO: aggiungere i nuovi messaggi in testa alla lista
+    std::list<Message*> messagesList; //TODO: aggiungere i nuovi messaggi in testa alla lista
+    int maxSavedMessage = 10;
     SecondaryUser* user;
     User* writer;
 };

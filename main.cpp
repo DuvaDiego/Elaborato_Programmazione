@@ -51,8 +51,6 @@ void tellInstructions(ChatRegister* reg) {
         std::cout << "- I| per mettere tra i messaggi importanti un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
         std::cout << "- Q| per uscire" << std::endl;
-
-        //TODO: aggiungere nome della Chat in cui ci si trova
     } else {
         std::cout << "\n Il registro al momento e' vuoto. Digitare:" << std::endl;
         std::cout << "- C| per creare una chat" << std::endl;
@@ -98,6 +96,8 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                         std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
 
                         tellInstructions(reg);
+                        reg->getCurrent()->getChatMessages();
+
                         break;
                     }
                     case Action::remove: {
@@ -108,7 +108,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                             reg->removeChat(current);
                             delete current;
 
-                            if (reg->getCurrent() != nullptr)        //FIXME: non funziona la rimozione della chat singola
+                            if (reg->getCurrent() != nullptr)
                                 std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
                         }
 
@@ -121,22 +121,24 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                     case Action::setImp:
                         std::cout << "Importanza impostata." << std::endl;
                         break;
-                    case Action::write: {
+                    case Action::write: { //FIXME: c'è qualcosa che non funziona, non riporta il messaggio
                         if (message.front().front() != '|') {
                             std::string lastWord = message.back();
                             message.pop_back();
                             lastWord.pop_back();
                             message.push_back(lastWord);
 
+                            //FIXME: quando risponde l'altra persona l'unica azione possibile da fare è scrivere
                             if(reg->getCurrent()->getWriter() == user) {
-
-                                //SentMessage* sentMess = new SentMessage(message, reg->getCurrent()->getUser());
+                                SentMessage* sentMess = new SentMessage(message, reg->getCurrent()->getUser()->getName());
+                                reg->getCurrent()->writeMessage(sentMess);
+                                //TODO: aggiornare lo scrittore della chat
+                            } else {
+                                ReceivedMessage* receivedMess = new ReceivedMessage(message, reg->getCurrent()->getUser()->getName());
+                                reg->getCurrent()->writeMessage(receivedMess);
+                                //TODO: aggiornare lo scrittore della chat
                             }
 
-                            for (auto &word: message) {
-                                std::cout << word << ' ' << std::flush;
-                            }
-                            std::cout << std::endl;
                         }
                         break;
                     }
@@ -160,7 +162,6 @@ int main() {
         std::string input;
         bool stop = false;
 
-        //TODO: impostare sistema di chatting alternato tra le due persone
         while (!stop) {
             std::cin >> input;
             message.push_back(input);

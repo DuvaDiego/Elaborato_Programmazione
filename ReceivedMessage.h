@@ -8,8 +8,10 @@
 
 class ReceivedMessage : public Message{
 public:
-    ReceivedMessage(std::list<std::string>& t, std::string s, bool imp = false, std::string r = "Diego");
+    ReceivedMessage(std::list<std::string>& t, std::string s, bool imp = false);
     ~ReceivedMessage() override = default;
+
+    void getText() const override;
 
     std::string getSender() const;
     void setSender(std::string newSender);
@@ -18,7 +20,7 @@ public:
 
 private:
     std::string sender;
-    const std::string recipient;
+    const std::string recipient = "Diego";
 };
 
 
