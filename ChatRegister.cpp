@@ -1,23 +1,20 @@
 #include "ChatRegister.h"
 
-ChatRegister::ChatRegister(std::list<Chat *> list, std::string o) : chatList(move(list)), owner(move(o)) {
+ChatRegister::ChatRegister(std::string o) : owner(move(o)) {
+    currentChat = nullptr;
 }
 
 ChatRegister::~ChatRegister() {
     for (auto& chat : chatList)
         delete chat;
+    delete currentChat;
 }
 
-bool ChatRegister::getChatList() const {
-    if (isEmpty()) {
-        return false;
-    }
-    else {
-        std::cout << "\nRegistro Chat:" << std::endl;
+void ChatRegister::getChatList() const {
+    std::cout << "\nRegistro Chat:" << std::endl;
         for (auto &chat: chatList)
             std::cout << "- " << chat->getName() << std::endl; //TODO: aggiungere la caratteristica delle chat preferite che compaiono in cima al registro
-        return true;
-    }
+
 }
 
 bool ChatRegister::isEmpty() const {
@@ -28,23 +25,26 @@ bool ChatRegister::isEmpty() const {
 
 void ChatRegister::addInChatList(Chat *newChat) {
     chatList.push_front(newChat);
+    currentChat = newChat;
     std::cout << "\nSei nella chat '" << newChat->getName() << "_' appena aggiunta al registro." << std::endl;
 }
 
-void ChatRegister::removeChat(Chat *current, Chat *newCurrent) {
+void ChatRegister::removeChat(Chat *current) {
     chatList.remove(current);
-    delete current;
     if (!isEmpty())
-        *newCurrent = chatList.front();
+        currentChat = chatList.front();
+    else
+        currentChat = nullptr;
 }
 
-Chat *ChatRegister::searchChat(std::string& nameChat) {
+bool ChatRegister::searchChat(std::string& nameChat) {
     for (auto& chat : chatList) {
-        if (chat->getName() == nameChat)
-            return chat;
+        if (chat->getName() == nameChat) {
+            currentChat = chat;
+            return true;
+        }
     }
-    std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::endl;
-    return currentChat;
+    return false;
 }
 
 Chat *ChatRegister::getCurrent() const {

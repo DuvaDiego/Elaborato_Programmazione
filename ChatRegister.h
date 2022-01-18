@@ -7,14 +7,14 @@
 
 class ChatRegister {
 public:
-    explicit ChatRegister(std::list<Chat*> list, std::string o = "Diego");
+    explicit ChatRegister(std::string o = "Diego");
     ~ChatRegister();
 
-    bool getChatList() const;
+    void getChatList() const;
     bool isEmpty() const;
     void addInChatList(Chat* newChat);
-    void removeChat(Chat* current, Chat* newCurrent);
-    Chat* searchChat(std::string& nameChat);
+    void removeChat(Chat* current);
+    bool searchChat(std::string& nameChat);
 
     Chat* getCurrent() const;
     void setCurrent(Chat* newCurrent);

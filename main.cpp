@@ -70,7 +70,6 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
 
             Chat* aChat = new Chat(aPerson);
             reg->addInChatList(aChat);
-            reg->setCurrent(aChat);
 
             tellInstructions(reg);
             break;
@@ -88,13 +87,14 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                     }
                     case Action::select: {
                         reg->getChatList();
-                        std::cout << "Seleziona una Chat scrivendo il suo nome:" << std::flush;
+                        std::cout << "Seleziona una Chat dal registro, scrivendo il suo nome:" << std::flush;
                         std::string nameChat;
                         std::cin >> nameChat;
 
-                        Chat* newCurrent = reg->searchChat(nameChat);
-                        reg->setCurrent(newCurrent);
-                        std::cout << "\nChat '" << newCurrent->getName() << "_' selezionata." << std::endl;
+                        bool chatFound = reg->searchChat(nameChat);
+                        if (!chatFound)
+                            std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::flush;
+                        std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
 
                         tellInstructions(reg);
                         break;
@@ -104,13 +104,11 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                             Chat* current = reg->getCurrent();
                             std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
 
-                            Chat* newCurrent = nullptr;
-                            reg->removeChat(current, newCurrent);
+                            reg->removeChat(current);
+                            delete current;
 
-                            reg->setCurrent(newCurrent);
-                            if (newCurrent != nullptr)        //FIXME: non funziona la rimozione della chat singola
-                                std::cout << "\nSei nella chat '" << newCurrent->getName() << "_'." << std::endl;
-
+                            if (reg->getCurrent() != nullptr)        //FIXME: non funziona la rimozione della chat singola
+                                std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
                         }
 
                         tellInstructions(reg);
@@ -148,8 +146,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
 }
 
 int main() {
-    std::list<Chat*> chatList;
-    ChatRegister* WhatsApp = new ChatRegister(chatList);
+    ChatRegister* WhatsApp = new ChatRegister();
     PrimaryUser* Diego (new PrimaryUser(WhatsApp));
 
     tellInstructions(WhatsApp);
@@ -169,7 +166,9 @@ int main() {
         Action action = getUserAction(message.front());
         bool quit =doUserAction(Diego ,action, WhatsApp, message);
 
-        if (quit)
+        if (quit) {
+            delete Diego;
             return 0;
+        }
     }
 }

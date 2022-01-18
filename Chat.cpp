@@ -7,6 +7,7 @@ Chat::Chat(SecondaryUser *u, bool b) : user(u), blocked(b) {
 Chat::~Chat() {
     for (auto& message : messagesList)
         delete message;
+    delete user;
 }
 
 std::string Chat::getName() const {
