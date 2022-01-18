@@ -1,13 +1,9 @@
 #include "Message.h"
 
-Message::Message(std::string t, bool imp) : text(move(t)), important(imp) {
+Message::Message(std::list<std::string> &t, bool imp) : important(imp) {
 }
 
-std::string Message::getText() const {
-    return text;
-}
-
-void Message::setText(std::string newText) {
+void Message::setText(std::list<std::string> newText) {
     text = move(newText);
 }
 

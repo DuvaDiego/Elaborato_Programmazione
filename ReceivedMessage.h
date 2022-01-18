@@ -2,22 +2,22 @@
 #define ELABORATO_PROGRAMMAZIONE_RECEIVEDMESSAGE_H
 
 #include <iostream>
+#include <list>
 #include "Message.h"
 #include "SecondaryUser.h"
 
 class ReceivedMessage : public Message{
 public:
-    ReceivedMessage(std::string t, bool imp, SecondaryUser* s, std::string r = "Diego");
+    ReceivedMessage(std::list<std::string>& t, std::string s, bool imp = false, std::string r = "Diego");
     ~ReceivedMessage() override = default;
 
-    //FIXME: vanno sistemti i metodi getter e setter del mittente (anche le definizioni)
-    SecondaryUser* getSender() const;
-    void setSender(SecondaryUser* newSender);
+    std::string getSender() const;
+    void setSender(std::string newSender);
 
     std::string getRecipient() const;
 
 private:
-    SecondaryUser* sender; //FIXME: trattandosi di un nome dovrebbe essere una stringa, non un SecondaryUser*
+    std::string sender;
     const std::string recipient;
 };
 

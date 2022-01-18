@@ -2,20 +2,21 @@
 #define ELABORATO_PROGRAMMAZIONE_MESSAGE_H
 
 #include <iostream>
+#include <list>
 
 class Message {
 public:
-    explicit Message(std::string t, bool imp = false);
+    explicit Message(std::list<std::string>& t, bool imp = false);
     virtual ~Message() = default;
 
-    std::string getText() const;
-    void setText(std::string newText);
+    virtual void getText() const = 0;
+    void setText(std::list<std::string> newText);
 
     bool getImportance() const;
     void setImportance(bool newImportance);
 
 protected:
-    std::string text;
+    std::list<std::string> text;
     bool important;
 
 };

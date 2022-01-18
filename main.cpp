@@ -70,6 +70,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
 
             Chat* aChat = new Chat(aPerson);
             reg->addInChatList(aChat);
+            aChat->setWriter(user);
 
             tellInstructions(reg);
             break;
@@ -127,7 +128,11 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                             lastWord.pop_back();
                             message.push_back(lastWord);
 
-                            std::cout << user->getName() << ": " << std::flush;
+                            if(reg->getCurrent()->getWriter() == user) {
+
+                                //SentMessage* sentMess = new SentMessage(message, reg->getCurrent()->getUser());
+                            }
+
                             for (auto &word: message) {
                                 std::cout << word << ' ' << std::flush;
                             }
@@ -147,7 +152,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
 
 int main() {
     ChatRegister* WhatsApp = new ChatRegister();
-    PrimaryUser* Diego (new PrimaryUser(WhatsApp));
+    PrimaryUser* Diego = new PrimaryUser(WhatsApp);
 
     tellInstructions(WhatsApp);
     while (true) {

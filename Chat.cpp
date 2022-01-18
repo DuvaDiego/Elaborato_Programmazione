@@ -2,6 +2,7 @@
 
 Chat::Chat(SecondaryUser *u, bool b) : user(u), blocked(b) {
     nameChat = user->getName();
+    writer = user;
 }
 
 Chat::~Chat() {
@@ -27,8 +28,9 @@ void Chat::setBlock(bool newSetup) {
 }
 
 void Chat::getChatMessages() const {
-    for (auto& messages : messagesList)
-        std::cout << messages->getText() << std::endl;
+    for (auto& messages : messagesList) {
+        messages->getText();
+    }
 }
 
 SecondaryUser *Chat::getUser() const {
@@ -39,3 +41,10 @@ void Chat::setUser(SecondaryUser *newUser) {
     user = newUser;
 }
 
+User *Chat::getWriter() const {
+    return writer;
+}
+
+void Chat::setWriter(User *newWriter) {
+    writer = newWriter;
+}

@@ -2,7 +2,7 @@
 #define ELABORATO_PROGRAMMAZIONE_CHAT_H
 
 #include <iostream>
-#include <list>
+#include <array>
 #include "Message.h"
 #include "SecondaryUser.h"
 
@@ -22,11 +22,15 @@ public:
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
 
+    User* getWriter() const;
+    void setWriter(User* newWriter);
+
 private:
     std::string nameChat;
     bool blocked;
-    std::list<Message*> messagesList; //TODO: aggiungere i nuovi messaggi in testa alla lista
+    std::array<Message*, 10> messagesList; //TODO: aggiungere i nuovi messaggi in testa alla lista
     SecondaryUser* user;
+    User* writer;
 };
 
 

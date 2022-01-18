@@ -1,14 +1,14 @@
 #include "ReceivedMessage.h"
 
-ReceivedMessage::ReceivedMessage(std::string t, bool imp, SecondaryUser *s, std::string r) : Message(move(t), imp), sender(s), recipient(move(r)) {
+ReceivedMessage::ReceivedMessage(std::list<std::string> &t, std::string s, bool imp, std::string r) : Message(t, imp), sender(move(s)), recipient(move(r)) {
 }
 
-SecondaryUser *ReceivedMessage::getSender() const {
+std::string ReceivedMessage::getSender() const {
     return sender;
 }
 
-void ReceivedMessage::setSender(SecondaryUser *newSender) {
-    sender = newSender;
+void ReceivedMessage::setSender(std::string newSender) {
+    sender = move(newSender);
 }
 
 std::string ReceivedMessage::getRecipient() const {

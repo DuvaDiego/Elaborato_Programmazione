@@ -1,16 +1,23 @@
 #include "SentMessage.h"
 
-SentMessage::SentMessage(std::string t, bool imp, SecondaryUser *r, std::string s) : Message(move(t), imp), recipient(r), sender(move(s)) {
+SentMessage::SentMessage(std::list<std::string> &t, std::string r, bool imp, std::string s) : Message(t, imp), recipient(move(r)), sender(move(s)) {
+
 }
 
 std::string SentMessage::getSender() const {
     return sender;
 }
 
-SecondaryUser *SentMessage::getRecipient() const {
+std::string SentMessage::getRecipient() const {
     return recipient;
 }
 
-void SentMessage::setRecipient(SecondaryUser *newRecipient) {
-    recipient = newRecipient;
+void SentMessage::setRecipient(std::string newRecipient) {
+    recipient = move(newRecipient);
+}
+
+void SentMessage::getText() const {
+    std::cout << sender << ": " << std::flush;
+    for (auto& word : text)
+        std::cout << word << " " << std::flush;
 }
