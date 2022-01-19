@@ -58,95 +58,102 @@ void tellInstructions(ChatRegister* reg) {
     }
 }
 
-bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
-    switch (action) {
-        case Action::create: {
-            std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
-            std::string person;
-            std::cin >> person;
-            SecondaryUser* aPerson = new SecondaryUser(person);
+void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* currentChat) {
+    if (message.front().front() != '|') {
+        std::string lastWord = message.back();
+        message.pop_back();
+        lastWord.pop_back();
+        message.push_back(lastWord);
 
-            Chat* aChat = new Chat(aPerson);
-            reg->addInChatList(aChat);
-            aChat->setWriter(user);
+        if(currentChat->getWriter() == user) {
+            SentMessage* sentMess = new SentMessage(message, currentChat->getUser()->getName());
+            currentChat->writeMessage(sentMess);
 
-            tellInstructions(reg);
-            break;
+            SecondaryUser* newWriter = currentChat->getUser();
+            currentChat->setWriter(newWriter);
+        } else {
+            ReceivedMessage* receivedMess = new ReceivedMessage(message, currentChat->getUser()->getName());
+            currentChat->writeMessage(receivedMess);
+
+            currentChat->setWriter(user);
         }
-        case Action::quit: {
-            std::cout << "\nProgramma chiuso, registro eliminato." << std::endl;
-            return true;
-        }
-        default: {
-            if (!reg->isEmpty()) {
-                switch (action) {
-                    case Action::getReg: {
-                        reg->getChatList();
-                        break;
-                    }
-                    case Action::select: {
-                        reg->getChatList();
-                        std::cout << "Seleziona una Chat dal registro, scrivendo il suo nome:" << std::flush;
-                        std::string nameChat;
-                        std::cin >> nameChat;
+    }
+}
 
-                        bool chatFound = reg->searchChat(nameChat);
-                        if (!chatFound)
-                            std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::flush;
-                        std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
 
-                        tellInstructions(reg);
-                        reg->getCurrent()->getChatMessages();
+bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
+    if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {
+        writeMessages(user, message, reg->getCurrent());
+    } else {
+        switch (action) {
+            case Action::create: {
+                std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
+                std::string person;
+                std::cin >> person;
+                SecondaryUser *aPerson = new SecondaryUser(person);
 
-                        break;
-                    }
-                    case Action::remove: {
-                        if(!reg->isEmpty()) {
-                            Chat* current = reg->getCurrent();
-                            std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
+                Chat *aChat = new Chat(aPerson, user);
+                reg->addInChatList(aChat);
 
-                            reg->removeChat(current);
-                            delete current;
-
-                            if (reg->getCurrent() != nullptr)
-                                std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
+                tellInstructions(reg);
+                break;
+            }
+            case Action::quit: {
+                std::cout << "\nProgramma chiuso, registro eliminato." << std::endl;
+                return true;
+            }
+            default: {
+                if (!reg->isEmpty()) {
+                    switch (action) {
+                        case Action::getReg: {
+                            reg->getChatList();
+                            break;
                         }
+                        case Action::select: {
+                            reg->getChatList();
+                            std::cout << "Seleziona una Chat dal registro, scrivendo il suo nome:" << std::flush;
+                            std::string nameChat;
+                            std::cin >> nameChat;
 
-                        tellInstructions(reg);
-                        break;
-                    }
-                    case Action::favourites:
-                        std::cout << "Messo tra i preferiti." << std::endl;
-                        break;
-                    case Action::setImp:
-                        std::cout << "Importanza impostata." << std::endl;
-                        break;
-                    case Action::write: {
-                        if (message.front().front() != '|') {
-                            std::string lastWord = message.back();
-                            message.pop_back();
-                            lastWord.pop_back();
-                            message.push_back(lastWord);
+                            bool chatFound = reg->searchChat(nameChat);
+                            if (!chatFound)
+                                std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::flush;
+                            std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
 
-                            //FIXME: quando risponde l'altra persona l'unica azione possibile da fare è scrivere
-                            if(reg->getCurrent()->getWriter() == user) {
-                                SentMessage* sentMess = new SentMessage(message, reg->getCurrent()->getUser()->getName());
-                                reg->getCurrent()->writeMessage(sentMess);
+                            tellInstructions(reg);
+                            reg->getCurrent()->getChatMessages();
 
-                                SecondaryUser* newWriter = reg->getCurrent()->getUser();
-                                reg->getCurrent()->setWriter(newWriter);
-                            } else {
-                                ReceivedMessage* receivedMess = new ReceivedMessage(message, reg->getCurrent()->getUser()->getName());
-                                reg->getCurrent()->writeMessage(receivedMess);
+                            break;
+                        }
+                        case Action::remove: {
+                            if (!reg->isEmpty()) {
+                                Chat *current = reg->getCurrent();
+                                std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
 
-                                reg->getCurrent()->setWriter(user);
+                                reg->removeChat(current);
+                                delete current;
+
+                                if (reg->getCurrent() != nullptr)
+                                    std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'."
+                                              << std::endl;
                             }
+
+                            tellInstructions(reg);
+                            break;
                         }
-                        break;
+                        case Action::favourites:
+                            std::cout << "Messo tra i preferiti." << std::endl;
+                            break;
+                        case Action::setImp:
+                            std::cout << "Importanza impostata." << std::endl;
+                            break;
+                        case Action::write: {
+                            writeMessages(user, message, reg->getCurrent());
+                            break;
+                        }
+                        case Action::noAction:
+                            break;
                     }
-                    case Action::noAction:
-                        std::cout << "..." << std::endl;
-                        break;
                 }
             }
         }

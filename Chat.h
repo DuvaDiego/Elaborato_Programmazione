@@ -8,7 +8,7 @@
 
 class Chat {
 public:
-    explicit Chat(SecondaryUser* u, bool b = false);
+    explicit Chat(SecondaryUser* u, User* w, bool b = false);
     ~Chat();
 
     std::string getName() const;

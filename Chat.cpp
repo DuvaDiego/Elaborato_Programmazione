@@ -1,8 +1,7 @@
 #include "Chat.h"
 
-Chat::Chat(SecondaryUser *u, bool b) : user(u), blocked(b) {
+Chat::Chat(SecondaryUser *u, User* w, bool b) : user(u), writer(w), blocked(b) {
     nameChat = user->getName();
-    writer = user;
 }
 
 Chat::~Chat() {
