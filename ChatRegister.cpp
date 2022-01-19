@@ -62,7 +62,17 @@ bool ChatRegister::searchChat(std::string& nameChat) {
 void ChatRegister::addInFavourites(Chat *theChat) {
     if (theChat->getUser()->isFavourite()) {
         theChat->getUser()->setFavouritism(false);
-        std::cout << "\nChat rimossa dai Preferiti." << std::endl; //FIXME: se tolgo la chat dai preferiti, rimane in cima alla lista
+        std::cout << "\nChat rimossa dai Preferiti." << std::endl;
+
+        chatList.remove(theChat);
+        auto it = chatList.begin();
+        for (auto& chat : chatList) {
+            if (chat->getUser()->isFavourite())
+                it++;
+            else
+                break;
+        }
+        chatList.insert(it, theChat);
     } else {
         theChat->getUser()->setFavouritism(true);
 
