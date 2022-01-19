@@ -148,9 +148,11 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                             tellInstructions(reg);
                             break;
                         }
-                        case Action::favourites:
-                            std::cout << "Messo tra i preferiti." << std::endl;
+                        case Action::favourites: {
+                            Chat* currentChat = reg->getCurrent();
+                            reg->addInFavourites(currentChat);
                             break;
+                        }
                         case Action::block: {
                             if (reg->getCurrent()->isBlocked()) {
                                 reg->getCurrent()->setBlock(false);

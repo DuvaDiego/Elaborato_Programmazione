@@ -15,6 +15,7 @@ public:
     void addInChatList(Chat* newChat);
     void removeChat(Chat* current);
     bool searchChat(std::string& nameChat);
+    void addInFavourites(Chat* theChat);
 
     Chat* getCurrent() const;
     void setCurrent(Chat* newCurrent);
