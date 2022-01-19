@@ -11,7 +11,7 @@
 #include "ReceivedMessage.h"
 
 enum class Action {
-    getReg, create, remove, select, favourites, write, setImp, quit, noAction
+    getReg, create, remove, select, favourites, block, write, setImp, quit, noAction
 };
 
 Action getUserAction(std::string firstWord) {
@@ -24,6 +24,8 @@ Action getUserAction(std::string firstWord) {
                 return Action::setImp;
             case 'F':
                 return Action::favourites;
+            case 'B':
+                return Action::block;
             case 'C':
                 return Action::create;
             case 'D':
@@ -47,6 +49,7 @@ void tellInstructions(ChatRegister* reg) {
         std::cout << "- C| per creare una chat" << std::endl;
         std::cout << "- S| per selezionare una chat" << std::endl;
         std::cout << "- D| per eliminare l'attuale chat" << std::endl;
+        std::cout << "- B| per bloccare l'attuale chat" << std::endl;
         std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
         std::cout << "- I| per mettere tra i messaggi importanti un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
@@ -83,7 +86,10 @@ void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* cur
 
 bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {
-        writeMessages(user, message, reg->getCurrent());
+        if (!reg->getCurrent()->isBlocked())
+            writeMessages(user, message, reg->getCurrent());
+        else
+            std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' bloccata. Non puoi scriverci messaggi." << std::endl;
     } else {
         switch (action) {
             case Action::create: {
@@ -117,11 +123,13 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
 
                             bool chatFound = reg->searchChat(nameChat);
                             if (!chatFound)
-                                std::cout << "\nLa chat '" << nameChat << "_' non esiste nel registro." << std::flush;
+                                std::cout << "\nLa Chat '" << nameChat << "_' non esiste nel registro." << std::flush;
                             std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
 
                             tellInstructions(reg);
                             reg->getCurrent()->getChatMessages();
+                            if (reg->getCurrent()->isBlocked())
+                                std::cout << "La Chat e' bloccata." << std::endl;
 
                             break;
                         }
@@ -134,8 +142,7 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                                 delete current;
 
                                 if (reg->getCurrent() != nullptr)
-                                    std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'."
-                                              << std::endl;
+                                    std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
                             }
 
                             tellInstructions(reg);
@@ -144,11 +151,24 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                         case Action::favourites:
                             std::cout << "Messo tra i preferiti." << std::endl;
                             break;
+                        case Action::block: {
+                            if (reg->getCurrent()->isBlocked()) {
+                                reg->getCurrent()->setBlock(false);
+                                std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' stata sbloccata." << std::endl;
+                            } else {
+                                reg->getCurrent()->setBlock(true);
+                                std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' stata bloccata." << std::endl;
+                            }
+                            break;
+                        }
                         case Action::setImp:
                             std::cout << "Importanza impostata." << std::endl;
                             break;
                         case Action::write: {
-                            writeMessages(user, message, reg->getCurrent());
+                            if (!reg->getCurrent()->isBlocked())
+                                writeMessages(user, message, reg->getCurrent());
+                            else
+                                std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' bloccata. Non puoi scriverci messaggi." << std::endl;
                             break;
                         }
                         case Action::noAction:
