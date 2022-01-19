@@ -11,7 +11,7 @@ public:
     ReceivedMessage(std::list<std::string>& t, std::string s, bool imp = false);
     ~ReceivedMessage() override = default;
 
-    void getText() const override;
+    void getText() override;
 
     std::string getSender() const;
     void setSender(std::string newSender);

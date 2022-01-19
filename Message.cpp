@@ -1,6 +1,8 @@
 #include "Message.h"
 
 Message::Message(std::list<std::string> &t, bool imp) : important(imp) {
+    auto it = text.begin();
+    text.splice(it, t);
 }
 
 void Message::setText(std::list<std::string> newText) {

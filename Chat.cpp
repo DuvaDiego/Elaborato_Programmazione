@@ -28,12 +28,13 @@ void Chat::setBlock(bool newSetup) {
 }
 
 void Chat::getChatMessages() const {
-    if (messagesList.empty()) {
+    if (!messagesList.empty()) {
         std::cout << "\nUltimi 10 messaggi della Chat:" << std::endl;
         for (auto &messages: messagesList) {
             std::cout << "\n- " << std::flush;
             messages->getText();
         }
+        std::cout << std::endl;
     } else
         std::cout << "\nLa Chat e' vuota." << std::endl;
 }

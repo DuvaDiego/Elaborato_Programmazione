@@ -121,7 +121,7 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                     case Action::setImp:
                         std::cout << "Importanza impostata." << std::endl;
                         break;
-                    case Action::write: { //FIXME: c'è qualcosa che non funziona, non riporta il messaggio
+                    case Action::write: {
                         if (message.front().front() != '|') {
                             std::string lastWord = message.back();
                             message.pop_back();
@@ -132,13 +132,15 @@ bool doUserAction(User* user, Action &action, ChatRegister* reg, std::list<std::
                             if(reg->getCurrent()->getWriter() == user) {
                                 SentMessage* sentMess = new SentMessage(message, reg->getCurrent()->getUser()->getName());
                                 reg->getCurrent()->writeMessage(sentMess);
-                                //TODO: aggiornare lo scrittore della chat
+
+                                SecondaryUser* newWriter = reg->getCurrent()->getUser();
+                                reg->getCurrent()->setWriter(newWriter);
                             } else {
                                 ReceivedMessage* receivedMess = new ReceivedMessage(message, reg->getCurrent()->getUser()->getName());
                                 reg->getCurrent()->writeMessage(receivedMess);
-                                //TODO: aggiornare lo scrittore della chat
-                            }
 
+                                reg->getCurrent()->setWriter(user);
+                            }
                         }
                         break;
                     }

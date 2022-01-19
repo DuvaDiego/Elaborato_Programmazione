@@ -3,7 +3,7 @@
 ReceivedMessage::ReceivedMessage(std::list<std::string> &t, std::string s, bool imp) : Message(t, imp), sender(move(s)) {
 }
 
-void ReceivedMessage::getText() const {
+void ReceivedMessage::getText() {
     std::cout << sender << ": " << std::flush;
     for (auto& word : text)
         std::cout << word << " " << std::flush;

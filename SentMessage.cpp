@@ -4,7 +4,7 @@ SentMessage::SentMessage(std::list<std::string> &t, std::string r, bool imp) : M
 
 }
 
-void SentMessage::getText() const {
+void SentMessage::getText() {
     std::cout << sender << ": " << std::flush;
     for (auto& word : text)
         std::cout << word << " " << std::flush;

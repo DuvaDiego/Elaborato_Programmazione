@@ -9,7 +9,7 @@ public:
     explicit Message(std::list<std::string>& t, bool imp = false);
     virtual ~Message() = default;
 
-    virtual void getText() const = 0;
+    virtual void getText() = 0;
     void setText(std::list<std::string> newText);
 
     bool getImportance() const;

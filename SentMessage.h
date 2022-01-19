@@ -11,7 +11,7 @@ public:
     SentMessage(std::list<std::string>& t, std::string r, bool imp = false);
     ~SentMessage() override = default;
 
-    void getText() const override;
+    void getText() override;
 
     std::string getSender() const;
 
