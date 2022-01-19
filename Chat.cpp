@@ -49,6 +49,27 @@ void Chat::writeMessage(Message *newMessage) {
     std::cout << std::endl;
 }
 
+void Chat::setMessImportance(int n) {
+    for (auto& message : messagesList) {
+        int i = 0;
+        if (i == n) {
+            if (message->getImportance()) {
+                message->setImportance(false);
+                std::cout << "Il messaggio '" << std::flush;
+                message->getText();
+                std::cout << "' non e' più importante." << std::endl;
+            } else {
+                message->setImportance(true);
+                std::cout << "Il messaggio '" << std::flush;
+                message->getText();
+                std::cout << "' e' ora importante." << std::endl;
+            }
+            break;
+        } else
+            i++;
+    }
+}
+
 SecondaryUser *Chat::getUser() const {
     return user;
 }

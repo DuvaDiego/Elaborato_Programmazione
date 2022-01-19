@@ -49,9 +49,9 @@ void tellInstructions(ChatRegister* reg) {
         std::cout << "- C| per creare una chat" << std::endl;
         std::cout << "- S| per selezionare una chat" << std::endl;
         std::cout << "- D| per eliminare l'attuale chat" << std::endl;
-        std::cout << "- B| per bloccare l'attuale chat" << std::endl;
-        std::cout << "- F| per mettere una chat tra i preferiti" << std::endl;
-        std::cout << "- I| per mettere tra i messaggi importanti un messaggio" << std::endl;
+        std::cout << "- B| per bloccare/sbloccare l'attuale chat" << std::endl;
+        std::cout << "- F| per impostare la preferenza dell'attuale chat" << std::endl;
+        std::cout << "- I| per impostare l'importanza di un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
         std::cout << "- Q| per uscire" << std::endl;
     } else {
@@ -163,9 +163,20 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                             }
                             break;
                         }
-                        case Action::setImp:
-                            std::cout << "Importanza impostata." << std::endl;
+                        case Action::setImp: {
+                            int n;
+                            std::cout << "\nInserire il n° del messaggio (1-10) o 0 per la lista dei messaggi importanti:" << std::flush;
+                            std::cin >> n;
+
+                            if (n < 0 || n > 10) {
+                                std::cout << "n° " << n << " non valido" << std::endl;
+                            } else if (n == 0) {
+                                //TODO: aggiungere lista messaggi importanti
+                            } else
+                                reg->getCurrent()->setMessImportance(n - 1);
+
                             break;
+                        }
                         case Action::write: {
                             if (!reg->getCurrent()->isBlocked())
                                 writeMessages(user, message, reg->getCurrent());

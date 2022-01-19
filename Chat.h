@@ -19,6 +19,7 @@ public:
 
     void getChatMessages() const;
     void writeMessage(Message* newMessage);
+    void setMessImportance(int n);
 
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
