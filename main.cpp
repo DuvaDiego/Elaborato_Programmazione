@@ -145,7 +145,7 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                                     std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
                             }
 
-                            tellInstructions(reg);
+                            tellInstructions(reg);  //TODO: quando elimini una chat e vai nella prima, riscrivere gli ultimi messaggi.
                             break;
                         }
                         case Action::favourites: {
@@ -165,13 +165,13 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                         }
                         case Action::setImp: {
                             int n;
-                            std::cout << "\nInserire il n° del messaggio (1-10) o 0 per la lista dei messaggi importanti:" << std::flush;
+                            std::cout << "\nInserire il n. del messaggio (1-10) o 0 per la lista dei messaggi importanti:" << std::flush;
                             std::cin >> n;
 
-                            if (n < 0 || n > 10) {
+                            if (n < 0 || n > 10) {  //FIXME: non imposta l'importanza del messaggio
                                 std::cout << "n° " << n << " non valido" << std::endl;
                             } else if (n == 0) {
-                                //TODO: aggiungere lista messaggi importanti
+                                reg->getCurrent()->getImportantMessage();
                             } else
                                 reg->getCurrent()->setMessImportance(n - 1);
 

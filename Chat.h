@@ -20,6 +20,7 @@ public:
     void getChatMessages() const;
     void writeMessage(Message* newMessage);
     void setMessImportance(int n);
+    void getImportantMessage() const;
 
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);
@@ -30,6 +31,7 @@ public:
 private:
     std::string nameChat;
     bool blocked;
+    std::list<Message*> savedMessage;
     std::list<Message*> messagesList;
     int maxSavedMessage = 10;
     SecondaryUser* user;

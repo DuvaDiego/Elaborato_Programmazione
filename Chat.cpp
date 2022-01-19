@@ -33,6 +33,11 @@ void Chat::getChatMessages() const {
         for (auto &messages: messagesList) {
             std::cout << "\n- " << std::flush;
             messages->getText();
+
+            if (messages->getImportance()) {
+                char ch = (char) 19;
+                std::cout << "  " << ch << std::flush;
+            }
         }
         std::cout << std::endl;
     } else
@@ -58,15 +63,28 @@ void Chat::setMessImportance(int n) {
                 std::cout << "Il messaggio '" << std::flush;
                 message->getText();
                 std::cout << "' non e' più importante." << std::endl;
+
+                savedMessage.remove(message);
             } else {
                 message->setImportance(true);
                 std::cout << "Il messaggio '" << std::flush;
                 message->getText();
                 std::cout << "' e' ora importante." << std::endl;
+
+                savedMessage.push_front(message);
             }
             break;
         } else
             i++;
+    }
+}
+
+void Chat::getImportantMessage() const {
+    for (auto& message : savedMessage) {
+        message->getText();
+
+        char ch = (char) 19;
+        std::cout << "  " << ch << std::flush;
     }
 }
 
