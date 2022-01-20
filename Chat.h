@@ -19,8 +19,8 @@ public:
 
     void getChatMessages() const;
     void writeMessage(Message* newMessage);
-    void setMessImportance(int n);
-    void getImportantMessage() const;
+    void setMessImportance(unsigned int n);
+    void getImportantMessages() const;
 
     SecondaryUser* getUser() const;
     void setUser(SecondaryUser* newUser);

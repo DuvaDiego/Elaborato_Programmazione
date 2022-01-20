@@ -42,6 +42,35 @@ Action getUserAction(std::string firstWord) {
     }
 }
 
+unsigned int convertChar(char c) {
+    switch (c) {
+        case '0':
+            return 0;
+        case '1':
+            return 1;
+        case '2':
+            return 2;
+        case '3':
+            return 3;
+        case '4':
+            return 4;
+        case '5':
+            return 5;
+        case '6':
+            return 6;
+        case '7':
+            return 7;
+        case '8':
+            return 8;
+        case '9':
+            return 9;
+        case 'i':
+            return 10;
+        default:
+            return 11;
+    }
+}
+
 void tellInstructions(ChatRegister* reg) {
     if (!reg->isEmpty()) {
         std::cout << "\nDigitare:" << std::endl;
@@ -84,7 +113,7 @@ void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* cur
 }
 
 
-bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::list<std::string> &message) { //TODO: sviluppare ogni azione
+bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::list<std::string> &message) {
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {
         if (!reg->getCurrent()->isBlocked())
             writeMessages(user, message, reg->getCurrent());
@@ -141,11 +170,13 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                                 reg->removeChat(current);
                                 delete current;
 
-                                if (reg->getCurrent() != nullptr)
+                                if (reg->getCurrent() != nullptr) {
                                     std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
+                                    reg->getCurrent()->getChatMessages();
+                                }
                             }
 
-                            tellInstructions(reg);  //TODO: quando elimini una chat e vai nella prima, riscrivere gli ultimi messaggi.
+                            tellInstructions(reg);
                             break;
                         }
                         case Action::favourites: {
@@ -164,16 +195,18 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                             break;
                         }
                         case Action::setImp: {
-                            int n;
-                            std::cout << "\nInserire il n. del messaggio (1-10) o 0 per la lista dei messaggi importanti:" << std::flush;
-                            std::cin >> n;
+                            char c;
+                            std::cout << "\nInserire il n. del messaggio (0-9) o i per la lista dei messaggi importanti:" << std::flush;
+                            std::cin >> c;
 
-                            if (n < 0 || n > 10) {  //FIXME: non imposta l'importanza del messaggio
-                                std::cout << "n° " << n << " non valido" << std::endl;
-                            } else if (n == 0) {
-                                reg->getCurrent()->getImportantMessage();
-                            } else
-                                reg->getCurrent()->setMessImportance(n - 1);
+                            unsigned int n = convertChar(c);
+                            if (n >= 0 && n < 10) {
+                                reg->getCurrent()->setMessImportance(n);
+                            } else if (n == 10) {
+                                reg->getCurrent()->getImportantMessages();
+                            } else {
+                                std::cout << "n. non valido." << std::endl;
+                            }
 
                             break;
                         }
