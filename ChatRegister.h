@@ -7,24 +7,24 @@
 
 class ChatRegister {
 public:
-    explicit ChatRegister(std::string o = "Diego");
+    explicit ChatRegister(std::string o = regOwner);
     ~ChatRegister();
 
     void getChatList() const;
     bool isEmpty() const;
-    void addInChatList(Chat* newChat);
-    void removeChat(Chat* current);
+    void addInChatList(std::shared_ptr<Chat>& newChat);
+    void removeChat(std::shared_ptr<Chat>& current);
     bool searchChat(std::string& nameChat);
-    void addInFavourites(Chat* theChat);
+    void addInFavourites(std::shared_ptr<Chat>& theChat);
 
-    Chat* getCurrent() const;
-    void setCurrent(Chat* newCurrent);
+    std::shared_ptr<Chat> getCurrent() const;
+    void setCurrent(std::shared_ptr<Chat> newCurrent);
 
     std::string getOwner() const;
 
 private:
-    std::list<Chat*> chatList;
-    Chat* currentChat;
+    std::list<std::shared_ptr<Chat>> chatList;
+    std::shared_ptr<Chat> currentChat;
     std::string owner;
 };
 

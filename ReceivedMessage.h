@@ -20,7 +20,7 @@ public:
 
 private:
     std::string sender;
-    const std::string recipient = "Diego";
+    const std::string recipient = regOwner;
 };
 
 

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <list>
 
+#define regOwner "Diego"
+
 class Message {
 public:
     explicit Message(std::list<std::string>& t, bool imp = false);

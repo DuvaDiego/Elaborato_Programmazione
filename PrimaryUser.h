@@ -6,13 +6,13 @@
 
 class PrimaryUser : public User{
 public:
-    explicit PrimaryUser(ChatRegister* reg, std::string name = "Diego");
+    explicit PrimaryUser(std::shared_ptr<ChatRegister> reg, std::string name = regOwner);
     ~PrimaryUser() override;
 
     void writeRegister() const;
 
 private:
-    ChatRegister* theRegister;
+    std::shared_ptr<ChatRegister> theRegister;
 };
 
 

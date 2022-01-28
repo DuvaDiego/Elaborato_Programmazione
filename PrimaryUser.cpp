@@ -1,10 +1,10 @@
 #include "PrimaryUser.h"
 
-PrimaryUser::PrimaryUser(ChatRegister *reg, std::string name) : theRegister(reg), User(move(name)) {
+PrimaryUser::PrimaryUser(std::shared_ptr<ChatRegister> reg, std::string name) : theRegister(move(reg)), User(move(name)) {
 }
 
 PrimaryUser::~PrimaryUser() {
-    delete theRegister;
+    theRegister.reset();
 }
 
 void PrimaryUser::writeRegister() const {

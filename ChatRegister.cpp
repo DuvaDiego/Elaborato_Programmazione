@@ -6,8 +6,8 @@ ChatRegister::ChatRegister(std::string o) : owner(move(o)) {
 
 ChatRegister::~ChatRegister() {
     for (auto& chat : chatList)
-        delete chat;
-    delete currentChat;
+        chat.reset();
+    currentChat.reset();
 }
 
 void ChatRegister::getChatList() const {
@@ -28,7 +28,7 @@ bool ChatRegister::isEmpty() const {
     return false;
 }
 
-void ChatRegister::addInChatList(Chat *newChat) {
+void ChatRegister::addInChatList(std::shared_ptr<Chat> &newChat) {
     auto it = chatList.begin();
     for (auto& chat : chatList) {
         if (chat->getUser()->isFavourite())
@@ -41,7 +41,7 @@ void ChatRegister::addInChatList(Chat *newChat) {
     std::cout << "\nSei nella chat '" << newChat->getName() << "_' appena aggiunta al registro." << std::endl;
 }
 
-void ChatRegister::removeChat(Chat *current) {
+void ChatRegister::removeChat(std::shared_ptr<Chat> &current) {
     chatList.remove(current);
     if (!isEmpty())
         currentChat = chatList.front();
@@ -59,7 +59,7 @@ bool ChatRegister::searchChat(std::string& nameChat) {
     return false;
 }
 
-void ChatRegister::addInFavourites(Chat *theChat) {
+void ChatRegister::addInFavourites(std::shared_ptr<Chat> &theChat) {
     if (theChat->getUser()->isFavourite()) {
         theChat->getUser()->setFavouritism(false);
         std::cout << "\nChat rimossa dai Preferiti." << std::endl;
@@ -83,12 +83,12 @@ void ChatRegister::addInFavourites(Chat *theChat) {
     }
 }
 
-Chat *ChatRegister::getCurrent() const {
+std::shared_ptr<Chat> ChatRegister::getCurrent() const {
     return currentChat;
 }
 
-void ChatRegister::setCurrent(Chat *newCurrent) {
-    currentChat = newCurrent;
+void ChatRegister::setCurrent(std::shared_ptr<Chat> newCurrent) {
+    currentChat = move(newCurrent);
 }
 
 std::string ChatRegister::getOwner() const {

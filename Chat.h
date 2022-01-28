@@ -2,13 +2,13 @@
 #define ELABORATO_PROGRAMMAZIONE_CHAT_H
 
 #include <iostream>
-#include <array>
+#include <memory>
 #include "Message.h"
 #include "SecondaryUser.h"
 
 class Chat {
 public:
-    Chat(SecondaryUser* u, User* w);
+    Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w);
     ~Chat();
 
     std::string getName() const;
@@ -18,24 +18,24 @@ public:
     void setBlock(bool newSetup);
 
     void getChatMessages() const;
-    void writeMessage(Message* newMessage);
+    void writeMessage(std::shared_ptr<Message>& newMessage);
     void setMessImportance(unsigned int n);
     void getImportantMessages() const;
 
-    SecondaryUser* getUser() const;
-    void setUser(SecondaryUser* newUser);
+    std::shared_ptr<SecondaryUser> getUser() const;
+    void setUser(std::shared_ptr<SecondaryUser> newUser);
 
-    User* getWriter() const;
-    void setWriter(User* newWriter);
+    std::shared_ptr<User> getWriter() const;
+    void setWriter(std::shared_ptr<User> newWriter);
 
 private:
     std::string nameChat;
     bool blocked;
-    std::list<Message*> savedMessage;
-    std::list<Message*> messagesList;
+    std::list<std::shared_ptr<Message>> savedMessage;
+    std::list<std::shared_ptr<Message>> messagesList;
     int maxSavedMessage = 10;
-    SecondaryUser* user;
-    User* writer;
+    std::shared_ptr<SecondaryUser> user;
+    std::shared_ptr<User> writer;
 };
 
 

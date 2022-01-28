@@ -19,7 +19,7 @@ public:
     void setRecipient(std::string newRecipient);
 
 private:
-    const std::string sender = "Diego";
+    const std::string sender = regOwner;
     std::string recipient;
 };
 

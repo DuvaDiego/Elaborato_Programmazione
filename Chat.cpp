@@ -1,14 +1,15 @@
 #include "Chat.h"
 
-Chat::Chat(SecondaryUser *u, User* w) : user(u), writer(w) {
+Chat::Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w) : user(move(u)), writer(move(w)) {
     nameChat = user->getName();
     blocked = false;
 }
 
 Chat::~Chat() {
     for (auto& message : messagesList)
-        delete message;
-    delete user;
+        message.reset();
+    user.reset();
+    writer.reset();
 }
 
 std::string Chat::getName() const {
@@ -44,7 +45,7 @@ void Chat::getChatMessages() const {
         std::cout << "\nLa Chat e' vuota." << std::endl;
 }
 
-void Chat::writeMessage(Message *newMessage) {
+void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     if (messagesList.size() == maxSavedMessage) {
         messagesList.pop_front();
     }
@@ -99,18 +100,18 @@ void Chat::getImportantMessages() const {
     }
 }
 
-SecondaryUser *Chat::getUser() const {
+std::shared_ptr<SecondaryUser> Chat::getUser() const {
     return user;
 }
 
-void Chat::setUser(SecondaryUser *newUser) {
-    user = newUser;
+void Chat::setUser(std::shared_ptr<SecondaryUser> newUser) {
+    user = move(newUser);
 }
 
-User *Chat::getWriter() const {
+std::shared_ptr<User> Chat::getWriter() const {
     return writer;
 }
 
-void Chat::setWriter(User *newWriter) {
-    writer = newWriter;
+void Chat::setWriter(std::shared_ptr<User> newWriter) {
+    writer = move(newWriter);
 }

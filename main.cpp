@@ -3,10 +3,6 @@
 
 #include "User.h"
 #include "PrimaryUser.h"
-#include "SecondaryUser.h"
-#include "ChatRegister.h"
-#include "Chat.h"
-#include "Message.h"
 #include "SentMessage.h"
 #include "ReceivedMessage.h"
 
@@ -71,7 +67,7 @@ unsigned int convertChar(char c) {
     }
 }
 
-void tellInstructions(ChatRegister* reg) {
+void tellInstructions(std::shared_ptr<ChatRegister> &reg) {
     if (!reg->isEmpty()) {
         std::cout << "\nDigitare:" << std::endl;
         std::cout << "- R| per la lista chat" << std::endl;
@@ -90,7 +86,7 @@ void tellInstructions(ChatRegister* reg) {
     }
 }
 
-void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* currentChat) {
+void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
     if (message.front().front() != '|') {
         std::string lastWord = message.back();
         message.pop_back();
@@ -98,13 +94,13 @@ void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* cur
         message.push_back(lastWord);
 
         if(currentChat->getWriter() == user) {
-            SentMessage* sentMess = new SentMessage(message, currentChat->getUser()->getName());
+            std::shared_ptr<Message> sentMess = std::make_shared<SentMessage>(message, currentChat->getUser()->getName());
             currentChat->writeMessage(sentMess);
 
-            SecondaryUser* newWriter = currentChat->getUser();
+            std::shared_ptr<SecondaryUser> newWriter = currentChat->getUser();
             currentChat->setWriter(newWriter);
         } else {
-            ReceivedMessage* receivedMess = new ReceivedMessage(message, currentChat->getUser()->getName());
+            std::shared_ptr<Message> receivedMess = std::make_shared<ReceivedMessage>(message, currentChat->getUser()->getName());
             currentChat->writeMessage(receivedMess);
 
             currentChat->setWriter(user);
@@ -113,7 +109,7 @@ void writeMessages(PrimaryUser* user, std::list<std::string> &message, Chat* cur
 }
 
 
-bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::list<std::string> &message) {
+bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<ChatRegister> reg, std::list<std::string> &message) {
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {
         if (!reg->getCurrent()->isBlocked())
             writeMessages(user, message, reg->getCurrent());
@@ -125,9 +121,9 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                 std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
                 std::string person;
                 std::cin >> person;
-                SecondaryUser *aPerson = new SecondaryUser(person);
+                std::shared_ptr<SecondaryUser> aPerson = std::make_shared<SecondaryUser>(person);
 
-                Chat *aChat = new Chat(aPerson, user);
+                std::shared_ptr<Chat> aChat = std::make_shared<Chat>(aPerson, user);
                 reg->addInChatList(aChat);
 
                 tellInstructions(reg);
@@ -164,23 +160,23 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                         }
                         case Action::remove: {
                             if (!reg->isEmpty()) {
-                                Chat *current = reg->getCurrent();
-                                std::cout << "\nChat '" << current->getName() << "_' eliminata." << std::endl;
+                                std::shared_ptr<Chat> currentChat = reg->getCurrent();
+                                std::cout << "\nChat '" << currentChat->getName() << "_' eliminata." << std::endl;
 
-                                reg->removeChat(current);
-                                delete current;
+                                reg->removeChat(currentChat);
+                                currentChat.reset();
 
                                 if (reg->getCurrent() != nullptr) {
                                     std::cout << "\nSei nella chat '" << reg->getCurrent()->getName() << "_'." << std::endl;
+                                    tellInstructions(reg);
                                     reg->getCurrent()->getChatMessages();
-                                }
+                                } else
+                                    tellInstructions(reg);
                             }
-
-                            tellInstructions(reg);
                             break;
                         }
                         case Action::favourites: {
-                            Chat* currentChat = reg->getCurrent();
+                            std::shared_ptr<Chat> currentChat = reg->getCurrent();
                             reg->addInFavourites(currentChat);
                             break;
                         }
@@ -194,7 +190,7 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
                             }
                             break;
                         }
-                        case Action::setImp: {
+                        case Action::setImp: { //FIXME: ci sono ancora problemi con il settaggio dell'importanza
                             char c;
                             std::cout << "\nInserire il n. del messaggio (0-9) o i per la lista dei messaggi importanti:" << std::flush;
                             std::cin >> c;
@@ -228,8 +224,9 @@ bool doUserAction(PrimaryUser* user, Action &action, ChatRegister* reg, std::lis
 }
 
 int main() {
-    ChatRegister* WhatsApp = new ChatRegister();
-    PrimaryUser* Diego = new PrimaryUser(WhatsApp);
+    std::shared_ptr<ChatRegister> WhatsApp(new ChatRegister());
+    //ChatRegister* WhatsApp = new ChatRegister();
+    std::shared_ptr<PrimaryUser> Diego = std::make_shared<PrimaryUser>(WhatsApp);
 
     tellInstructions(WhatsApp);
     while (true) {
@@ -248,7 +245,7 @@ int main() {
         bool quit =doUserAction(Diego ,action, WhatsApp, message);
 
         if (quit) {
-            delete Diego;
+            Diego.reset();
             return 0;
         }
     }
