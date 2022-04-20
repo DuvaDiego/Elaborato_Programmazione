@@ -38,7 +38,8 @@ Action getUserAction(std::string firstWord) {
     }
 }
 
-unsigned int convertChar(char c) {
+unsigned int convertChar(std::string s) {
+    char c = s.front();
     switch (c) {
         case '0':
             return 0;
@@ -190,19 +191,27 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             }
                             break;
                         }
-                        case Action::setImp: { //FIXME: ci sono ancora problemi con il settaggio dell'importanza
-                            char c;
-                            std::cout << "\nInserire il n. del messaggio (0-9) o i per la lista dei messaggi importanti:" << std::flush;
-                            std::cin >> c;
+                        case Action::setImp: {
+                            bool req;
+                            do {
+                                std::string s;
+                                std::cout
+                                        << "\nInserire il n. del messaggio (0-9) o i per la lista dei messaggi importanti:"
+                                        << std::flush;
+                                std::cin >> s;
 
-                            unsigned int n = convertChar(c);
-                            if (n >= 0 && n < 10) {
-                                reg->getCurrent()->setMessImportance(n);
-                            } else if (n == 10) {
-                                reg->getCurrent()->getImportantMessages();
-                            } else {
-                                std::cout << "n. non valido." << std::endl;
-                            }
+                                unsigned int n = convertChar(s);
+                                if (n >= 0 && n < 10) {
+                                    reg->getCurrent()->setMessImportance(n);
+                                    req = false;
+                                } else if (n == 10) {
+                                    reg->getCurrent()->getImportantMessages();
+                                    req = false;
+                                } else {
+                                    std::cout << "n. non valido." << std::endl;
+                                    req = true;
+                                }
+                            } while (req);
 
                             break;
                         }

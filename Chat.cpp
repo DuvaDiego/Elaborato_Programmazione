@@ -68,12 +68,14 @@ void Chat::setMessImportance(unsigned int n) {
                     message->setImportance(false);
                     std::cout << "Messaggio non piu' importante -" << std::flush;
                     message->getText();
+                    std::cout << std::endl;
 
                     savedMessage.remove(message);
                 } else {
                     message->setImportance(true);
                     std::cout << "Messaggio importante -" << std::flush;
                     message->getText();
+                    std::cout << std::endl;
 
                     savedMessage.push_back(message);
                 }
