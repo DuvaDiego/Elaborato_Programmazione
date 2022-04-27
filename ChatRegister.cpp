@@ -59,27 +59,37 @@ bool ChatRegister::searchChat(std::string& nameChat) {
     return false;
 }
 
-void ChatRegister::addInFavourites(std::shared_ptr<Chat> &theChat) {
-    if (theChat->getUser()->isFavourite()) {
-        theChat->getUser()->setFavouritism(false);
+void ChatRegister::addInFavourites() {
+    if (currentChat->getUser()->isFavourite()) {
+        currentChat->getUser()->setFavouritism(false);
         std::cout << "\nChat rimossa dai Preferiti." << std::endl;
 
-        chatList.remove(theChat);
+        chatList.remove(currentChat);
         auto it = chatList.begin();
-        for (auto& chat : chatList) {
+        for (auto &chat: chatList) {
             if (chat->getUser()->isFavourite())
                 it++;
             else
                 break;
         }
-        chatList.insert(it, theChat);
+        chatList.insert(it, currentChat);
     } else {
-        theChat->getUser()->setFavouritism(true);
+        currentChat->getUser()->setFavouritism(true);
 
-        chatList.remove(theChat);
-        chatList.push_front(theChat);
+        chatList.remove(currentChat);
+        chatList.push_front(currentChat);
 
         std::cout << "\nChat aggiunta ai Preferiti." << std::endl;
+    }
+}
+
+void ChatRegister::blockChat() {
+    if (currentChat->isBlocked()) {
+        currentChat->setBlock(false);
+        std::cout << "\nLa chat '" << currentChat->getName() << "_' e' stata sbloccata." << std::endl;
+    } else {
+        currentChat->setBlock(true);
+        std::cout << "\nLa chat '" << currentChat->getName() << "_' e' stata bloccata." << std::endl;
     }
 }
 

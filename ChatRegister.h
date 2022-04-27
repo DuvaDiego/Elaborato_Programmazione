@@ -15,7 +15,8 @@ public:
     void addInChatList(std::shared_ptr<Chat>& newChat);
     void removeChat(std::shared_ptr<Chat>& current);
     bool searchChat(std::string& nameChat);
-    void addInFavourites(std::shared_ptr<Chat>& theChat);
+    void addInFavourites();
+    void blockChat();
 
     std::shared_ptr<Chat> getCurrent() const;
     void setCurrent(std::shared_ptr<Chat> newCurrent);

@@ -38,28 +38,32 @@ Action getUserAction(std::string firstWord) {
     }
 }
 
-unsigned int convertChar(std::string s) {
-    char c = s.front();
+unsigned int convertInInt(std::string s) {
+    char c;
+    if (s == "10")
+        c = '0';
+    else
+        c = s.front();
     switch (c) {
-        case '0':
-            return 0;
         case '1':
-            return 1;
+            return 0;
         case '2':
-            return 2;
+            return 1;
         case '3':
-            return 3;
+            return 2;
         case '4':
-            return 4;
+            return 3;
         case '5':
-            return 5;
+            return 4;
         case '6':
-            return 6;
+            return 5;
         case '7':
-            return 7;
+            return 6;
         case '8':
-            return 8;
+            return 7;
         case '9':
+            return 8;
+        case '0':
             return 9;
         case 'i':
             return 10;
@@ -89,7 +93,7 @@ void tellInstructions(std::shared_ptr<ChatRegister> &reg) {
 
 void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
     if (message.front().front() != '|') {
-        std::string lastWord = message.back();
+        std::string lastWord = message.back();                                                                          // Toglie dal messaggio il simbolo '|' di chiusura
         message.pop_back();
         lastWord.pop_back();
         message.push_back(lastWord);
@@ -98,8 +102,7 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
             std::shared_ptr<Message> sentMess = std::make_shared<SentMessage>(message, currentChat->getUser()->getName());
             currentChat->writeMessage(sentMess);
 
-            std::shared_ptr<SecondaryUser> newWriter = currentChat->getUser();
-            currentChat->setWriter(newWriter);
+            currentChat->setWriter(currentChat->getUser());
         } else {
             std::shared_ptr<Message> receivedMess = std::make_shared<ReceivedMessage>(message, currentChat->getUser()->getName());
             currentChat->writeMessage(receivedMess);
@@ -111,7 +114,7 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
 
 
 bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<ChatRegister> reg, std::list<std::string> &message) {
-    if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {
+    if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {                                       // quando è il turno dell'altra persona parlare non si può eseguire alcuna azione
         if (!reg->getCurrent()->isBlocked())
             writeMessages(user, message, reg->getCurrent());
         else
@@ -150,8 +153,8 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             bool chatFound = reg->searchChat(nameChat);
                             if (!chatFound)
                                 std::cout << "\nLa Chat '" << nameChat << "_' non esiste nel registro." << std::flush;
-                            std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;
-
+                            std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;  // se la chat che si sta cercando non è nel registro
+                                                                                                                        // si rimane nella chat dove ci si trovava
                             tellInstructions(reg);
                             reg->getCurrent()->getChatMessages();
                             if (reg->getCurrent()->isBlocked())
@@ -177,18 +180,11 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             break;
                         }
                         case Action::favourites: {
-                            std::shared_ptr<Chat> currentChat = reg->getCurrent();
-                            reg->addInFavourites(currentChat);
+                            reg->addInFavourites();
                             break;
                         }
                         case Action::block: {
-                            if (reg->getCurrent()->isBlocked()) {
-                                reg->getCurrent()->setBlock(false);
-                                std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' stata sbloccata." << std::endl;
-                            } else {
-                                reg->getCurrent()->setBlock(true);
-                                std::cout << "\nLa chat '" << reg->getCurrent()->getName() << "_' e' stata bloccata." << std::endl;
-                            }
+                            reg->blockChat();
                             break;
                         }
                         case Action::setImp: {
@@ -196,11 +192,11 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             do {
                                 std::string s;
                                 std::cout
-                                        << "\nInserire il n. del messaggio (0-9) o i per la lista dei messaggi importanti:"
+                                        << "\nInserire il numero del messaggio (1-10) o 'i' per la lista dei messaggi importanti:"
                                         << std::flush;
                                 std::cin >> s;
 
-                                unsigned int n = convertChar(s);
+                                unsigned int n = convertInInt(s);
                                 if (n >= 0 && n < 10) {
                                     reg->getCurrent()->setMessImportance(n);
                                     req = false;
@@ -208,7 +204,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                                     reg->getCurrent()->getImportantMessages();
                                     req = false;
                                 } else {
-                                    std::cout << "n. non valido." << std::endl;
+                                    std::cout << "numero non valido, inserirne un altro." << std::endl;
                                     req = true;
                                 }
                             } while (req);
@@ -243,9 +239,9 @@ int main() {
         std::string input;
         bool stop = false;
 
-        while (!stop) {
-            std::cin >> input;
-            message.push_back(input);
+        while (!stop) {                                                                                                 // Il ciclo while permette la scrittura di una frase
+            std::cin >> input;                                                                                          // std::cin permette di scrivere una parola alla volta,
+            message.push_back(input);                                                                                   // altrimenti genera due azioni consecutive.
             if (input.back() == '|')
                 stop = true;
         }
