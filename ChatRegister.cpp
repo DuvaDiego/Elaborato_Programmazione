@@ -15,7 +15,7 @@ void ChatRegister::getChatList() const {
         for (auto &chat: chatList) {
             std::cout << "- " << chat->getName() << std::flush;
             if (chat->getUser()->isFavourite()) {
-                char ch = (char) 3;
+                char ch = (char) 3;                                                                                     // aggiunge un cuore dopo il nome della chat
                 std::cout << "  " << ch << std::flush;
             }
             std::cout << std::endl;
@@ -31,7 +31,7 @@ bool ChatRegister::isEmpty() const {
 void ChatRegister::addInChatList(std::shared_ptr<Chat> &newChat) {
     auto it = chatList.begin();
     for (auto& chat : chatList) {
-        if (chat->getUser()->isFavourite())
+        if (chat->getUser()->isFavourite())                                                                             // una nuova chat viene inserita dopo quelle preferite
             it++;
         else
             break;
@@ -41,22 +41,29 @@ void ChatRegister::addInChatList(std::shared_ptr<Chat> &newChat) {
     std::cout << "\nSei nella chat '" << newChat->getName() << "_' appena aggiunta al registro." << std::endl;
 }
 
-void ChatRegister::removeChat(std::shared_ptr<Chat> &current) {
-    chatList.remove(current);
-    if (!isEmpty())
+void ChatRegister::removeChat() {
+    std::cout << "\nChat '" << currentChat->getName() << "_' eliminata." << std::endl;
+
+    chatList.remove(currentChat);
+    currentChat.reset();
+    if (!isEmpty()) {
         currentChat = chatList.front();
+        std::cout << "\nSei nella chat '" << currentChat->getName() << "_'." << std::endl;
+    }
     else
         currentChat = nullptr;
 }
 
-bool ChatRegister::searchChat(std::string& nameChat) {
+void ChatRegister::searchChat(std::string& nameChat) {
+    bool chatFound = false;
     for (auto& chat : chatList) {
         if (chat->getName() == nameChat) {
             currentChat = chat;
-            return true;
+            chatFound = true;
         }
     }
-    return false;
+    if (!chatFound)
+        std::cout << "\nLa Chat '" << nameChat << "_' non esiste nel registro." << std::flush;
 }
 
 void ChatRegister::addInFavourites() {
@@ -67,8 +74,8 @@ void ChatRegister::addInFavourites() {
         chatList.remove(currentChat);
         auto it = chatList.begin();
         for (auto &chat: chatList) {
-            if (chat->getUser()->isFavourite())
-                it++;
+            if (chat->getUser()->isFavourite())                                                                         // una chat rimossa dai preferiti va portata
+                it++;                                                                                                   // in coda all'ultima chat preferita
             else
                 break;
         }

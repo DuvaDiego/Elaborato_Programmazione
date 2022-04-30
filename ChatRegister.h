@@ -13,8 +13,8 @@ public:
     void getChatList() const;
     bool isEmpty() const;
     void addInChatList(std::shared_ptr<Chat>& newChat);
-    void removeChat(std::shared_ptr<Chat>& current);
-    bool searchChat(std::string& nameChat);
+    void removeChat();
+    void searchChat(std::string& nameChat);
     void addInFavourites();
     void blockChat();
 
