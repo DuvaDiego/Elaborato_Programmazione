@@ -42,6 +42,8 @@ unsigned int convertInInt(std::string s) {
     char c;
     if (s == "10")
         c = '0';
+    else if (s.size() > 1)
+        c = 'x';
     else
         c = s.front();
     switch (c) {
@@ -67,8 +69,10 @@ unsigned int convertInInt(std::string s) {
             return 9;
         case 'i':
             return 10;
-        default:
+        case 'd':
             return 11;
+        default:
+            return 12;
     }
 }
 
@@ -83,12 +87,11 @@ void tellInstructions(std::shared_ptr<ChatRegister> &reg) {
         std::cout << "- F| per impostare la preferenza dell'attuale chat" << std::endl;
         std::cout << "- I| per impostare l'importanza di un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
-        std::cout << "- Q| per uscire" << std::endl;
     } else {
         std::cout << "\n Il registro al momento e' vuoto. Digitare:" << std::endl;
         std::cout << "- C| per creare una chat" << std::endl;
-        std::cout << "- Q| per ucire" << std::endl;
     }
+    std::cout << "- Q| per uscire" << std::endl;
 }
 
 void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
@@ -185,20 +188,14 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             bool req;
                             do {
                                 std::string s;
-                                std::cout << "\nInserire il numero del messaggio (1-10) o 'i' per la lista dei messaggi importanti:" << std::flush;
+                                std::cout << "\nInserire:" << std::endl;
+                                std::cout << "- un numero da 1 a 10, per rendere un messaggio importante" << std::endl;
+                                std::cout << "- 'i', per ottenere la lista dei messaggi importanti" << std::endl;
+                                std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
                                 std::cin >> s;
 
                                 unsigned int n = convertInInt(s);
-                                if (n >= 0 && n < 10) {
-                                    reg->getCurrent()->setMessImportance(n);
-                                    req = false;
-                                } else if (n == 10) {
-                                    reg->getCurrent()->getImportantMessages();
-                                    req = false;
-                                } else {
-                                    std::cout << "numero non valido, inserirne un altro. " << std::endl;
-                                    req = true;
-                                }
+                                req = reg->getCurrent()->setMessImportance(n);
                             } while (req);
 
                             break;

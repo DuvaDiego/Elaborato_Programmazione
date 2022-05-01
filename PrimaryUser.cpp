@@ -6,7 +6,3 @@ PrimaryUser::PrimaryUser(std::shared_ptr<ChatRegister> reg, std::string name) : 
 PrimaryUser::~PrimaryUser() {
     theRegister.reset();
 }
-
-void PrimaryUser::writeRegister() const {
-    theRegister->getChatList();
-}

@@ -9,8 +9,6 @@ public:
     explicit PrimaryUser(std::shared_ptr<ChatRegister> reg, std::string name = regOwner);
     ~PrimaryUser() override;
 
-    void writeRegister() const;
-
 private:
     std::shared_ptr<ChatRegister> theRegister;
 };

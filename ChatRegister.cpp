@@ -60,6 +60,7 @@ void ChatRegister::searchChat(std::string& nameChat) {
         if (chat->getName() == nameChat) {
             currentChat = chat;
             chatFound = true;
+            break;
         }
     }
     if (!chatFound)

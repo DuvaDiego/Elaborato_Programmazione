@@ -19,7 +19,7 @@ public:
 
     void getChatMessages() const;
     void writeMessage(std::shared_ptr<Message>& newMessage);
-    void setMessImportance(unsigned int n);
+    bool setMessImportance(unsigned int n);
     void getImportantMessages() const;
 
     std::shared_ptr<SecondaryUser> getUser() const;
