@@ -3,7 +3,6 @@ project(Elaborato_Programmazione)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(test)
 set(SOURCE_FILES
         User.cpp  User.h
         ChatRegister.cpp  ChatRegister.h
@@ -15,4 +14,5 @@ set(SOURCE_FILES
         ReceivedMessage.cpp  ReceivedMessage.h)
 add_executable(Elaborato_Programmazione main.cpp)
 add_library(core ${SOURCE_FILES})
+add_subdirectory(test)
 target_link_libraries(Elaborato_Programmazione core)
