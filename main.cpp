@@ -3,8 +3,6 @@
 
 #include "User.h"
 #include "PrimaryUser.h"
-#include "SentMessage.h"
-#include "ReceivedMessage.h"
 
 enum class Action {
     getReg, create, remove, select, favourites, block, write, setImp, quit, noAction
@@ -103,12 +101,12 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
             message.push_back(lastWord);
 
             if (currentChat->getWriter() == user) {
-                std::shared_ptr<Message> sentMess = std::make_shared<SentMessage>(message,currentChat->getUser()->getName());
+                std::shared_ptr<Message> sentMess = std::make_shared<Message>(message, user->getName(),currentChat->getUser()->getName());
                 currentChat->writeMessage(sentMess);
 
                 currentChat->setWriter(currentChat->getUser());
             } else {
-                std::shared_ptr<Message> receivedMess = std::make_shared<ReceivedMessage>(message,currentChat->getUser()->getName());
+                std::shared_ptr<Message> receivedMess = std::make_shared<Message>(message,currentChat->getUser()->getName(), user->getName());
                 currentChat->writeMessage(receivedMess);
 
                 currentChat->setWriter(user);

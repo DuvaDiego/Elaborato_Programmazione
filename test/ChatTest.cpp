@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "../Chat.h"
 #include "../User.h"
-#include "../ReceivedMessage.h"
 
 std::shared_ptr<User> u = std::make_shared<User>("Utente");
 std::shared_ptr<SecondaryUser> s = std::make_shared<SecondaryUser>("Persona");
@@ -15,11 +14,12 @@ TEST(Chat, ChatCtor) {
 }
 
 TEST(Chat, SetImportanceTest) {
-    std::string s = "Persona";
+    std::string p = "Mittente";
+    std::string r = "Destinatario";
     std::string w = "Test";
     std::list<std::string> t;
     t.push_front(w);
-    std::shared_ptr<Message> m = std::make_shared<ReceivedMessage>(t, s);
+    std::shared_ptr<Message> m = std::make_shared<Message>(t, p, r);
     c->writeMessage(m);
 
     int n = 0;

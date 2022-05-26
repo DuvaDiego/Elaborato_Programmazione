@@ -10,8 +10,7 @@ set(SOURCE_FILES
         Message.cpp  Message.h
         PrimaryUser.cpp  PrimaryUser.h
         SecondaryUser.cpp  SecondaryUser.h
-        SentMessage.cpp  SentMessage.h
-        ReceivedMessage.cpp  ReceivedMessage.h)
+        )
 add_executable(Elaborato_Programmazione main.cpp)
 add_library(core ${SOURCE_FILES})
 add_subdirectory(test)

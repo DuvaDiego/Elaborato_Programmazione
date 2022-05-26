@@ -4,23 +4,29 @@
 #include <iostream>
 #include <list>
 
-#define regOwner "Diego"
-
 class Message {
 public:
     explicit Message(std::list<std::string>& t, bool imp = false);
+    Message(std::list<std::string>& t, std::string s, std::string r, bool imp = false);
     virtual ~Message() = default;
 
-    virtual void getText() = 0;
+    void getText();
     void setText(std::list<std::string> newText);
 
     bool getImportance() const;
     void setImportance(bool newImportance);
 
+    std::string getSender() const;
+    void setSender(std::string newSender);
+
+    std::string getRecipient() const;
+    void setRecipient(std::string newRecipient);
+
 protected:
     std::list<std::string> text;
     bool important;
-
+    std::string sender;
+    std::string recipient;
 };
 
 

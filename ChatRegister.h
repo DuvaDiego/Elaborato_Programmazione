@@ -5,6 +5,8 @@
 #include <list>
 #include "Chat.h"
 
+#define regOwner "Diego"
+
 class ChatRegister {
 public:
     explicit ChatRegister(std::string o = regOwner);
