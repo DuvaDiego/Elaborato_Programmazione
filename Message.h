@@ -22,7 +22,7 @@ public:
     std::string getRecipient() const;
     void setRecipient(std::string newRecipient);
 
-protected:
+protected: //TODO: aggiungere la caratteristica di messaggio letto o non letto
     std::list<std::string> text;
     bool important;
     std::string sender;

@@ -65,7 +65,7 @@ unsigned int convertInInt(std::string s) {
             return 8;
         case '0':
             return 9;
-        case 'i':
+        case 'l':
             return 10;
         case 'd':
             return 11;
@@ -118,7 +118,7 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
 }
 
 
-bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<ChatRegister> reg, std::list<std::string> &message) {
+bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<ChatRegister> reg, std::list<std::string> &message) { //TODO: aggiungere ricerca e cancellazione di un messaggio nella chat
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {                                       // quando è il turno dell'altra persona parlare non si può eseguire alcuna azione
         writeMessages(user, message, reg->getCurrent());
     } else {
@@ -188,7 +188,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                                 std::string s;
                                 std::cout << "\nInserire:" << std::endl;
                                 std::cout << "- un numero da 1 a 10, per rendere un messaggio importante" << std::endl;
-                                std::cout << "- 'i', per ottenere la lista dei messaggi importanti" << std::endl;
+                                std::cout << "- 'l', per ottenere la lista dei messaggi importanti" << std::endl;
                                 std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
                                 std::cin >> s;
 

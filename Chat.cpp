@@ -30,19 +30,9 @@ void Chat::setBlock(bool newSetup) {
 
 void Chat::getChatMessages() const {
     if (!messagesList.empty()) {
-        std::cout << "\nUltimi 10 messaggi della Chat:" << std::flush;
-        for (auto &messages: messagesList) {
-            std::cout << "\n- " << std::flush;
-            messages->getText();
-
-            if (messages->getImportance()) {
-                char ch = (char) 19;
-                std::cout << "  " << ch << std::flush;
-            }
-        }
-        std::cout << std::endl;
+        ChatView::getMessages(messagesList, true);
     } else
-        std::cout << "\nLa Chat e' vuota." << std::endl;
+        ChatView::getMessages(messagesList, false);
 }
 
 void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
@@ -50,73 +40,54 @@ void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
         messagesList.pop_front();
     }
     messagesList.push_back(newMessage);
-
-    newMessage->getText();
-    std::cout << std::endl;
+    ChatView::writeMessage(newMessage);
 }
 
 bool Chat::setMessImportance(unsigned int n) {
-    if (n >= 0 && n < 10) {                                                                                             // caso settaggio importanza
-        unsigned int quantity = messagesList.size();
-        if (n > quantity - 1 && n < 10) {                                                                               // nel caso ci sono m < 10 messaggi nella chat, si può inserire
-            std::cout << "\nNella Chat ci sono " << quantity << " messaggi." << std::endl;                              // un numero fino a m
-            std::cout << "Il numero massimo che puoi inserire e' " << quantity << std::endl;
-            return true;
-        } else {                                                                                                        // caso generale settaggio importanza
-            int i = 0;
-            for (auto &message: messagesList) {                                                                         // scorre fino al messaggio desiderato
-                if (i == n) {
-                    if (message->getImportance()) {
-                        message->setImportance(false);
-                        std::cout << "Messaggio non piu' importante -" << std::flush;
-                        message->getText();
-
-                        savedMessage.remove(message);
-                    } else {
-                        message->setImportance(true);
-                        std::cout << "Messaggio importante -" << std::flush;
-                        message->getText();
-
-                        savedMessage.push_back(message);
-                    }
-                    std::cout << std::endl;
-                    std::cout << std::endl;
-                    return false;
-                } else
-                    i++;
+    unsigned int quantity = messagesList.size();
+    if (!messagesList.empty()) {
+        if (n >= 0 && n < 10) {                                                                                         // caso settaggio importanza
+            if (n > quantity - 1) {                                                                                     // nel caso ci sono m < 10 messaggi nella chat, si può inserire un numero fino a m
+                ChatView::sayImportance(0, quantity);
+                return true;
+            } else {
+                int i = 0;
+                for (auto &message: messagesList) {                                                                     // scorre fino al messaggio desiderato
+                    if (i == n) {                                                                                       // caso settaggio importanza a true
+                        if (message->getImportance()) {
+                            message->setImportance(false);
+                            ChatView::sayImportance(1, quantity);
+                            savedMessage.remove(message);
+                        } else {                                                                                        // caso settaggio importanza a false
+                            message->setImportance(true);
+                            ChatView::sayImportance(2, quantity);
+                            savedMessage.push_back(message);
+                        }
+                        ChatView::writeMessage(message);
+                        return false;
+                    } else
+                        i++;
+                }
             }
+        } else if (n == 10) {                                                                                           // caso lettura messaggi importanti
+            if (savedMessage.empty()) {                                                                                 // caso lista messaggi importanti vuota
+                ChatView::sayImportance(3, quantity);
+                return false;
+            } else {
+                for (std::shared_ptr<Message> message: savedMessage)
+                    ChatView::writeMessage(message);
+                return false;
+            }
+        } else if (n == 11) {                                                                                           // caso pulizia messaggi importanti
+            ChatView::sayImportance(4, quantity);
+            return false;
         }
-    } else if (n == 10) {                                                                                               // caso per ottenere lista messaggi importanti
-        getImportantMessages();
-        return false;
-    } else if (n == 11) {                                                                                                 // caso pulizia messaggi importanti
-        if(!savedMessage.empty()) {
-            savedMessage.clear();
-            std::cout << "Lista messaggi importanti svuotata." << std::endl;
-        }
-        else
-            std::cout << "Non ci sono messaggi importanti in questa Chat." << std::endl;
-        std::cout << std::endl;
-        return false;
-    }
-
-    std::cout << "Carattere non valido. " << std::endl;                                                                 // caso carattere non valido
-    return true;
-}
-
-void Chat::getImportantMessages() const {
-    if(savedMessage.empty()) {
-        std::cout << "Non ci sono messaggi importanti in questa Chat." << std::endl;
+        ChatView::sayImportance(5,quantity);                                                                   // caso carattere non valido
+        return true;
     } else {
-        for (auto &message: savedMessage) {
-            std::cout << "\n- " << std::flush;
-            message->getText();
-
-            char ch = (char) 19;
-            std::cout << "  " << ch << std::flush;
-        }
+        ChatView::sayImportance(6, quantity);                                                                  // caso chat vuota
+        return false;
     }
-    std::cout << std::endl;
 }
 
 std::shared_ptr<SecondaryUser> Chat::getUser() const {

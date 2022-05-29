@@ -18,22 +18,29 @@ TEST(Chat, SetImportanceTest) {
     std::string r = "Destinatario";
     std::string w = "Test";
     std::list<std::string> t;
+
+    int n = 0;
+    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test chat vuota
+
     t.push_front(w);
     std::shared_ptr<Message> m = std::make_shared<Message>(t, p, r);
     c->writeMessage(m);
 
-    int n = 0;
-    ASSERT_EQ(false, c->setMessImportance(n));
+    n = 10;
+    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test lista messaggi importanti vuota
+
+    n = 0;
+    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test importanza del messaggio impostata
 
     n = 4;
-    ASSERT_EQ(true, c->setMessImportance(n));
+    ASSERT_EQ(true, c->setMessImportance(n));                                                                 // test scelta numero messaggio sbagliato
 
     n = 10;
-    ASSERT_EQ(false, c->setMessImportance(n));
+    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test lettura lista messaggi importanti
 
     n = 11;
-    ASSERT_EQ(false, c->setMessImportance(n));
+    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test pulizia messaggi importanti
 
     n = 100;
-    ASSERT_EQ(true, c->setMessImportance(n));
+    ASSERT_EQ(true, c->setMessImportance(n));                                                                 // test carattere non valido
 }
