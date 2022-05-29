@@ -1,34 +1,26 @@
-#include "ChatRegister.h"
+#include "Register.h"
 
-ChatRegister::ChatRegister(std::string o) : owner(move(o)) {
+Register::Register(std::string o) : owner(move(o)) {
     currentChat = nullptr;
 }
 
-ChatRegister::~ChatRegister() {
+Register::~Register() {
     for (auto& chat : chatList)
         chat.reset();
     currentChat.reset();
 }
 
-void ChatRegister::getChatList() const {
-    std::cout << "\nRegistro Chat:" << std::endl;
-        for (auto &chat: chatList) {
-            std::cout << "- " << chat->getName() << std::flush;
-            if (chat->getUser()->isFavourite()) {
-                char ch = (char) 3;                                                                                     // aggiunge un cuore dopo il nome della chat
-                std::cout << "  " << ch << std::flush;
-            }
-            std::cout << std::endl;
-        }
+void Register::getChatList() const {
+    RegisterView::writeChats(chatList);
 }
 
-bool ChatRegister::isEmpty() const {
+bool Register::isEmpty() const {
     if (chatList.empty())
         return true;
     return false;
 }
 
-void ChatRegister::addInChatList(std::shared_ptr<Chat> &newChat) {
+void Register::addInChatList(std::shared_ptr<Chat> &newChat) {
     auto it = chatList.begin();
     for (auto& chat : chatList) {
         if (chat->getUser()->isFavourite())                                                                             // una nuova chat viene inserita dopo quelle preferite
@@ -38,23 +30,23 @@ void ChatRegister::addInChatList(std::shared_ptr<Chat> &newChat) {
     }
     chatList.insert(it, newChat);
     currentChat = newChat;
-    std::cout << "\nSei nella chat '" << newChat->getName() << "_' appena aggiunta al registro." << std::endl;
+    RegisterView::tellCurrentChat(currentChat->getName());
 }
 
-void ChatRegister::removeChat() {
-    std::cout << "\nChat '" << currentChat->getName() << "_' eliminata." << std::endl;
+void Register::removeChat() {
+    RegisterView::tellStateChat(currentChat->getName(), 0, false);
 
     chatList.remove(currentChat);
     currentChat.reset();
     if (!isEmpty()) {
         currentChat = chatList.front();
-        std::cout << "\nSei nella chat '" << currentChat->getName() << "_'." << std::endl;
+        RegisterView::tellCurrentChat(currentChat->getName());
     }
     else
         currentChat = nullptr;
 }
 
-void ChatRegister::searchChat(std::string& nameChat) {
+void Register::searchChat(std::string& nameChat) {
     bool chatFound = false;
     for (auto& chat : chatList) {
         if (chat->getName() == nameChat) {
@@ -64,13 +56,13 @@ void ChatRegister::searchChat(std::string& nameChat) {
         }
     }
     if (!chatFound)
-        std::cout << "\nLa Chat '" << nameChat << "_' non esiste nel registro." << std::flush;
+        RegisterView::tellStateChat(nameChat, 0, false);
 }
 
-void ChatRegister::addInFavourites() {
+void Register::addInFavourites() {
     if (currentChat->getUser()->isFavourite()) {
+        RegisterView::tellStateChat(currentChat->getName(), 1, true);
         currentChat->getUser()->setFavouritism(false);
-        std::cout << "\nChat rimossa dai Preferiti." << std::endl;
 
         chatList.remove(currentChat);
         auto it = chatList.begin();
@@ -82,33 +74,32 @@ void ChatRegister::addInFavourites() {
         }
         chatList.insert(it, currentChat);
     } else {
+        RegisterView::tellStateChat(currentChat->getName(), 1, false);
         currentChat->getUser()->setFavouritism(true);
 
         chatList.remove(currentChat);
         chatList.push_front(currentChat);
-
-        std::cout << "\nChat aggiunta ai Preferiti." << std::endl;
     }
 }
 
-void ChatRegister::blockChat() {
+void Register::blockChat() {
     if (currentChat->isBlocked()) {
+        RegisterView::tellStateChat(currentChat->getName(), 2, true);
         currentChat->setBlock(false);
-        std::cout << "\nLa chat '" << currentChat->getName() << "_' e' stata sbloccata." << std::endl;
     } else {
+        RegisterView::tellStateChat(currentChat->getName(), 2, false);
         currentChat->setBlock(true);
-        std::cout << "\nLa chat '" << currentChat->getName() << "_' e' stata bloccata." << std::endl;
     }
 }
 
-std::shared_ptr<Chat> ChatRegister::getCurrent() const {
+std::shared_ptr<Chat> Register::getCurrent() const {
     return currentChat;
 }
 
-void ChatRegister::setCurrent(std::shared_ptr<Chat> newCurrent) {
+void Register::setCurrent(std::shared_ptr<Chat> newCurrent) {
     currentChat = move(newCurrent);
 }
 
-std::string ChatRegister::getOwner() const {
+std::string Register::getOwner() const {
     return owner;
 }

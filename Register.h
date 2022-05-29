@@ -1,16 +1,17 @@
-#ifndef ELABORATO_PROGRAMMAZIONE_CHATREGISTER_H
-#define ELABORATO_PROGRAMMAZIONE_CHATREGISTER_H
+#ifndef ELABORATO_PROGRAMMAZIONE_REGISTER_H
+#define ELABORATO_PROGRAMMAZIONE_REGISTER_H
 
 #include <iostream>
 #include <list>
 #include "Chat.h"
+#include "RegisterView.h"
 
 #define regOwner "Diego"
 
-class ChatRegister {
+class Register {
 public:
-    explicit ChatRegister(std::string o = regOwner);
-    ~ChatRegister();
+    explicit Register(std::string o = regOwner);
+    ~Register();
 
     void getChatList() const;
     bool isEmpty() const;
@@ -32,4 +33,4 @@ private:
 };
 
 
-#endif //ELABORATO_PROGRAMMAZIONE_CHATREGISTER_H
+#endif //ELABORATO_PROGRAMMAZIONE_REGISTER_H

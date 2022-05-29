@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "../ChatRegister.h"
+#include "../Register.h"
 #include "../User.h"
 
-std::shared_ptr<ChatRegister> reg = std::make_shared<ChatRegister>();
+std::shared_ptr<Register> reg = std::make_shared<Register>();
 
 TEST(Register, RegisterCtor) {
     ASSERT_EQ(regOwner, reg->getOwner());

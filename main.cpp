@@ -74,22 +74,12 @@ unsigned int convertInInt(std::string s) {
     }
 }
 
-void tellInstructions(std::shared_ptr<ChatRegister> &reg) {
+void tellInstructions(std::shared_ptr<Register> &reg) {
     if (!reg->isEmpty()) {
-        std::cout << "\nDigitare:" << std::endl;
-        std::cout << "- R| per la lista chat" << std::endl;
-        std::cout << "- C| per creare una chat" << std::endl;
-        std::cout << "- S| per selezionare una chat" << std::endl;
-        std::cout << "- D| per eliminare l'attuale chat" << std::endl;
-        std::cout << "- B| per bloccare/sbloccare l'attuale chat" << std::endl;
-        std::cout << "- F| per impostare la preferenza dell'attuale chat" << std::endl;
-        std::cout << "- I| per impostare l'importanza di un messaggio" << std::endl;
-        std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
+        RegisterView::tellInstruction(1);
     } else {
-        std::cout << "\n Il registro al momento e' vuoto. Digitare:" << std::endl;
-        std::cout << "- C| per creare una chat" << std::endl;
+        RegisterView::tellInstruction(0);
     }
-    std::cout << "- Q| per uscire" << std::endl;
 }
 
 void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
@@ -114,19 +104,17 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
         }
     }
     else
-        std::cout << "\nLa chat '" << currentChat->getName() << "_' e' bloccata. Non puoi scriverci messaggi." << std::endl;
+        RegisterView::tellStateChat(currentChat->getName(), 2, false);
 }
 
 
-bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<ChatRegister> reg, std::list<std::string> &message) { //TODO: aggiungere ricerca e cancellazione di un messaggio nella chat
+bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<Register> reg, std::list<std::string> &message) { //TODO: aggiungere ricerca e cancellazione di un messaggio nella chat
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {                                       // quando è il turno dell'altra persona parlare non si può eseguire alcuna azione
         writeMessages(user, message, reg->getCurrent());
     } else {
         switch (action) {
             case Action::create: {
-                std::cout << "\nInserire nome utente della persona con cui vuoi parlare:" << std::flush;
-                std::string person;
-                std::cin >> person;
+                std::string person = RegisterView::writeNameChat(0);
                 std::shared_ptr<SecondaryUser> aPerson = std::make_shared<SecondaryUser>(person);
 
                 std::shared_ptr<Chat> aChat = std::make_shared<Chat>(aPerson, user);
@@ -138,7 +126,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
             case Action::noAction:
                 break;
             case Action::quit: {
-                std::cout << "\nProgramma chiuso, registro eliminato." << std::endl;
+                RegisterView::closeRegister();
                 return true;
             }
             default: {
@@ -150,17 +138,15 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                         }
                         case Action::select: {
                             reg->getChatList();
-                            std::cout << "Seleziona una Chat dal registro, scrivendo il suo nome:" << std::flush;
-                            std::string nameChat;
-                            std::cin >> nameChat;
+                            std::string nameChat = RegisterView::writeNameChat(1);
 
                             reg->searchChat(nameChat);
-                            std::cout << "\nChat '" << reg->getCurrent()->getName() << "_' selezionata." << std::endl;  // se la chat che si sta cercando non è nel registro
-                                                                                                                        // si rimane nella chat dove ci si trovava
+                            RegisterView::tellCurrentChat(reg->getCurrent()->getName());                          // se la chat che si sta cercando non è nel registro si rimane nella chat dove ci si trovava
+
                             tellInstructions(reg);
                             reg->getCurrent()->getChatMessages();
                             if (reg->getCurrent()->isBlocked())
-                                std::cout << "La Chat e' bloccata." << std::endl;
+                                RegisterView::tellStateChat(reg->getCurrent()->getName(), 2, false);
                             break;
                         }
                         case Action::remove: {
@@ -185,13 +171,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                         case Action::setImp: {
                             bool req;
                             do {
-                                std::string s;
-                                std::cout << "\nInserire:" << std::endl;
-                                std::cout << "- un numero da 1 a 10, per rendere un messaggio importante" << std::endl;
-                                std::cout << "- 'l', per ottenere la lista dei messaggi importanti" << std::endl;
-                                std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
-                                std::cin >> s;
-
+                                std::string s = ChatView::writeImportanceCommand();
                                 unsigned int n = convertInInt(s);
                                 req = reg->getCurrent()->setMessImportance(n);
                             } while (req);
@@ -211,7 +191,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
 }
 
 int main() {
-    std::shared_ptr<ChatRegister> WhatsApp(new ChatRegister());
+    std::shared_ptr<Register> WhatsApp(new Register());
     std::shared_ptr<PrimaryUser> Diego = std::make_shared<PrimaryUser>(WhatsApp);
 
     tellInstructions(WhatsApp);

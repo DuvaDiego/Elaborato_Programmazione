@@ -2,15 +2,15 @@
 #define ELABORATO_PROGRAMMAZIONE_PRIMARYUSER_H
 
 #include "User.h"
-#include "ChatRegister.h"
+#include "Register.h"
 
 class PrimaryUser : public User{
 public:
-    explicit PrimaryUser(std::shared_ptr<ChatRegister> reg, std::string name = regOwner);
+    explicit PrimaryUser(std::shared_ptr<Register> reg, std::string name = regOwner);
     ~PrimaryUser() override;
 
 private:
-    std::shared_ptr<ChatRegister> theRegister;
+    std::shared_ptr<Register> theRegister;
 };
 
 

@@ -21,7 +21,6 @@ public:
     void getChatMessages() const;
     void writeMessage(std::shared_ptr<Message>& newMessage);
     bool setMessImportance(unsigned int n);
-    void getImportantMessages(unsigned int messageQuantity) const;
 
     std::shared_ptr<SecondaryUser> getUser() const;
     void setUser(std::shared_ptr<SecondaryUser> newUser);

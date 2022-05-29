@@ -20,6 +20,16 @@ void ChatView::getMessages(std::list<std::shared_ptr<Message>> list, bool parame
         std::cout << "\nLa Chat e' vuota." << std::endl;
 }
 
+std::string ChatView::writeImportanceCommand() {
+    std::string s;
+    std::cout << "\nInserire:" << std::endl;
+    std::cout << "- un numero da 1 a 10, per rendere un messaggio importante" << std::endl;
+    std::cout << "- 'l', per ottenere la lista dei messaggi importanti" << std::endl;
+    std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
+    std::cin >> s;
+    return s;
+}
+
 void ChatView::sayImportance(int parameter, unsigned int messageQuantity) {
     if (parameter == 0) {
         std::cout << "\nNella Chat ci sono " << messageQuantity << " messaggi." << std::endl;
