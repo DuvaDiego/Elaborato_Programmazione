@@ -12,7 +12,7 @@ void ChatView::writeMessage(std::shared_ptr<Message> &m) {
 
 void ChatView::getMessages(std::list<std::shared_ptr<Message>> list, bool parameter) {
     if (parameter) {
-        std::cout << "\nUltimi 10 messaggi della Chat:" << std::flush;
+        std::cout << "\nUltimi 10 messaggi della Chat:" << std::endl;
         for (auto &message: list)
             writeMessage(message);
     }

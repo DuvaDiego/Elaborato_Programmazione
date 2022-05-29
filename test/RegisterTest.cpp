@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "../Register.h"
-#include "../User.h"
 
 std::shared_ptr<Register> reg = std::make_shared<Register>();
 

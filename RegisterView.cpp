@@ -55,13 +55,13 @@ void RegisterView::tellStateChat(std::string name, int parameter, bool parValue)
         if (parValue)
             std::cout << "\nChat '" << name <<"_' rimossa dai Preferiti." << std::endl;
         else
-            std::cout << "\nChat '" << name <<"_'  aggiunta ai Preferiti." << std::endl;
+            std::cout << "\nChat '" << name <<"_' aggiunta ai Preferiti." << std::endl;
     }
     else if (parameter == 2) {
         if (parValue)
-            std::cout << "\nLa Chat '" << name <<"_'  e' stata sbloccata." << std::endl;
+            std::cout << "\nLa Chat '" << name <<"_' e' stata sbloccata." << std::endl;
         else
-            std::cout << "\nLa Chat '" << name <<"_'  e' bloccata, non e' possibile scriverci messaggi." << std::endl;
+            std::cout << "\nLa Chat '" << name <<"_' e' bloccata, non e' possibile scriverci messaggi." << std::endl;
     }
 }
 
