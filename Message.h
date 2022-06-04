@@ -25,6 +25,8 @@ public:
     std::string getRecipient() const;
     void setRecipient(std::string newRecipient);
 
+    static bool isEgual(std::string word, std::string model);
+
 protected:
     std::list<std::string> text;
     bool important;

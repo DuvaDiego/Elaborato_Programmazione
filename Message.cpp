@@ -14,9 +14,9 @@ void Message::setText(std::list<std::string> newText) {
     text = move(newText);
 }
 
-bool Message::searchWord(std::string word) const { // FIXME: se la parola è seguita da un segno di punteggiatura o si differenzia per la maiuscola, non è riconosciuta
+bool Message::searchWord(std::string word) const {
     for (auto& w : text) {
-        if(w == word)
+        if(isEgual(word, w))
             return true;
     }
     return false;
@@ -52,4 +52,32 @@ std::string Message::getRecipient() const {
 
 void Message::setRecipient(std::string newRecipient) {
     recipient = move(newRecipient);
+}
+
+bool Message::isEgual(std::string word, std::string model) {
+    std::string capitalModel = model;                                                                                   // variante del modello con lettera maiuscola
+    int iMaiusc = (int) model.front() - 32;
+    char lMaiusc = (char) iMaiusc;
+    capitalModel.replace(0, 1, &lMaiusc);
+    capitalModel.erase(1, 3);
+
+    std::string lowercaseModel = model;                                                                                 // variante del modello con lettera minuscola
+    int iMinusc = (int) model.front() + 32;
+    char lMinusc = (char) iMinusc;
+    lowercaseModel.replace(0, 1, &lMinusc);
+    lowercaseModel.erase(1, 3);
+
+    std::string simpleModel = model;                                                                                    // variante del modello con punteggiatura in fondo
+    simpleModel.pop_back();
+
+    std::string simpleCapitalModel = capitalModel;                                                                      // variante del modello con lettera maiuscola e punteggiatura in fondo
+    simpleCapitalModel.pop_back();
+
+    std::string simpleLowercaseModel = lowercaseModel;                                                                  // variante del modello con lettera minuscola e punteggiatura in fondo
+    simpleLowercaseModel.pop_back();
+
+    if(word == model || word == capitalModel || word == lowercaseModel || word == simpleModel || word == simpleCapitalModel || word == simpleLowercaseModel)
+        return true;
+    else
+        return false;
 }
