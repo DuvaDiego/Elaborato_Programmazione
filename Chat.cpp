@@ -39,7 +39,13 @@ void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     if (messagesList.size() == maxSavedMessage) {
         messagesList.pop_front();
     }
+
+    if (!messagesList.empty()) {
+        messagesList.back()->setRead(true);                                                                     // un messaggio viene letto quando l'altro utente risponde a tale messaggio
+    }
+
     messagesList.push_back(newMessage);
+
     ChatView::writeMessage(newMessage);
 }
 

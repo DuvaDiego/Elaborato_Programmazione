@@ -2,9 +2,12 @@
 
 
 void ChatView::writeMessage(std::shared_ptr<Message> &m) {
+    std::cout << m->getSender() << ": " << std::flush;
+
     m->getText();
+
     if (m->getImportance()) {
-        char ch = (char) 19;
+        char ch = (char) 19;                                                                                            // aggiunge "!!" in fondo al messaggio è importante
         std::cout << "  " << ch << std::flush;
     }
     std::cout << std::endl;
@@ -13,8 +16,15 @@ void ChatView::writeMessage(std::shared_ptr<Message> &m) {
 void ChatView::getMessages(std::list<std::shared_ptr<Message>> list, bool parameter) {
     if (parameter) {
         std::cout << "\nUltimi 10 messaggi della Chat:" << std::endl;
-        for (auto &message: list)
+        for (auto &message: list) {
+            if (message->isRead()) {
+                char ch = (char) 175;                                                                                   // aggiunge ">>" prima del messaggio se è stato letto
+                std::cout << ch << " " << std::flush;
+            } else {
+                std::cout << "> " << std::flush;                                                                        // aggiunge ">" prima del messaggio se non è stato ancora letto
+            }
             writeMessage(message);
+        }
     }
     else
         std::cout << "\nLa Chat e' vuota." << std::endl;

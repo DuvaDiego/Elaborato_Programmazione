@@ -6,8 +6,7 @@
 
 class Message {
 public:
-    explicit Message(std::list<std::string>& t, bool imp = false);
-    Message(std::list<std::string>& t, std::string s, std::string r, bool imp = false);
+    Message(std::list<std::string>& t, std::string s, std::string r, bool imp = false, bool read = false);
     virtual ~Message() = default;
 
     void getText();
@@ -16,15 +15,19 @@ public:
     bool getImportance() const;
     void setImportance(bool newImportance);
 
+    bool isRead() const;
+    void setRead(bool newRead);
+
     std::string getSender() const;
     void setSender(std::string newSender);
 
     std::string getRecipient() const;
     void setRecipient(std::string newRecipient);
 
-protected: //TODO: aggiungere la caratteristica di messaggio letto o non letto
+protected:
     std::list<std::string> text;
     bool important;
+    bool read;
     std::string sender;
     std::string recipient;
 };

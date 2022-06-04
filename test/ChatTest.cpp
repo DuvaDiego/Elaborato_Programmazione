@@ -44,3 +44,27 @@ TEST(Chat, SetImportanceTest) {
     n = 100;
     ASSERT_EQ(true, c->setMessImportance(n));                                                                 // test carattere non valido
 }
+
+TEST(Chat, messageRead) {
+    std::string p = "Mittente";
+    std::string r = "Destinatario";
+    std::string w = "Test 1";
+    std::list<std::string> t;
+
+    t.push_front(w);
+    std::shared_ptr<Message> m1 = std::make_shared<Message>(t, p, r);
+    c->writeMessage(m1);
+
+    ASSERT_EQ(false, m1->isRead());
+
+    p = "Destinatario";
+    r = "Mittente";
+    w = "Test 2";
+
+    t.push_front(w);
+    std::shared_ptr<Message> m2 = std::make_shared<Message>(t, p, r);
+    c->writeMessage(m2);
+
+    ASSERT_EQ(true, m1->isRead());
+    ASSERT_EQ(false, m2->isRead());
+}

@@ -1,17 +1,11 @@
 #include "Message.h"
 
-Message::Message(std::list<std::string> &t, bool imp) : important(imp) {
-    auto it = text.begin();
-    text.splice(it, t);
-}
-
-Message::Message(std::list<std::string> &t, std::string s, std::string r, bool imp) : sender(move(s)), recipient(move(r)),  important(imp) {
+Message::Message(std::list<std::string> &t, std::string s, std::string r, bool imp, bool read) : sender(move(s)), recipient(move(r)),  important(imp), read(read) {
     auto it = text.begin();
     text.splice(it, t);
 }
 
 void Message::getText() {
-    std::cout << sender << ": " << std::flush;
     for (auto& word : text)
         std::cout << word << " " << std::flush;
 }
@@ -26,6 +20,14 @@ bool Message::getImportance() const {
 
 void Message::setImportance(bool newImportance) {
     important = newImportance;
+}
+
+bool Message::isRead() const {
+    return read;
+}
+
+void Message::setRead(bool newRead) {
+    read = newRead;
 }
 
 std::string Message::getSender() const {
