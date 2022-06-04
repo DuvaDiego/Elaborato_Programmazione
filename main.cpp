@@ -5,7 +5,7 @@
 #include "PrimaryUser.h"
 
 enum class Action {
-    getReg, create, remove, select, favourites, block, write, setImp, quit, noAction
+    getReg, create, remove, select, favourites, block, write, find, setImp, quit, noAction
 };
 
 Action getUserAction(std::string firstWord) {
@@ -14,9 +14,11 @@ Action getUserAction(std::string firstWord) {
         switch (c) {
             case 'Q':
                 return Action::quit;
+            case 'F':
+                return Action::find;
             case 'I':
                 return Action::setImp;
-            case 'F':
+            case 'P':
                 return Action::favourites;
             case 'B':
                 return Action::block;
@@ -108,7 +110,7 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
 }
 
 
-bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<Register> reg, std::list<std::string> &message) { //TODO: aggiungere ricerca e cancellazione di un messaggio nella chat
+bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<Register> reg, std::list<std::string> &message) {
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {                                       // quando è il turno dell'altra persona parlare non si può eseguire alcuna azione
         writeMessages(user, message, reg->getCurrent());
     } else {
@@ -166,6 +168,11 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                         }
                         case Action::block: {
                             reg->blockChat();
+                            break;
+                        }
+                        case Action::find: {
+                            std::string s = ChatView::writeResearchCommand();
+                            reg->getCurrent()->searchMessages(s);
                             break;
                         }
                         case Action::setImp: {

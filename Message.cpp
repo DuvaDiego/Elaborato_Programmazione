@@ -14,6 +14,14 @@ void Message::setText(std::list<std::string> newText) {
     text = move(newText);
 }
 
+bool Message::searchWord(std::string word) const { // FIXME: se la parola è seguita da un segno di punteggiatura o si differenzia per la maiuscola, non è riconosciuta
+    for (auto& w : text) {
+        if(w == word)
+            return true;
+    }
+    return false;
+}
+
 bool Message::getImportance() const {
     return important;
 }

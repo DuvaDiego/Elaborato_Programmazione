@@ -49,6 +49,26 @@ void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     ChatView::writeMessage(newMessage);
 }
 
+void Chat::searchMessages(std::string &word) const {
+    if (!messagesList.empty()) {
+        int corresponding = 0;
+        std::list<std::shared_ptr<Message>> messagesFound;
+
+        for (auto &message: messagesList) {
+            if (message->searchWord(word)) {
+                messagesFound.push_back(message);
+                corresponding++;
+            }
+        }
+
+        ChatView::correspondingMessage(corresponding, word);
+        for (auto &message: messagesFound) {
+            ChatView::writeMessage(message);
+        }
+    } else
+        ChatView::getMessages(messagesList, false);
+}
+
 bool Chat::setMessImportance(unsigned int n) {
     unsigned int quantity = messagesList.size();
     if (!messagesList.empty()) {

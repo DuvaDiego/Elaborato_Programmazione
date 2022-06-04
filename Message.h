@@ -11,6 +11,7 @@ public:
 
     void getText();
     void setText(std::list<std::string> newText);
+    bool searchWord(std::string word) const;
 
     bool getImportance() const;
     void setImportance(bool newImportance);

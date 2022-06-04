@@ -2,6 +2,13 @@
 
 
 void ChatView::writeMessage(std::shared_ptr<Message> &m) {
+    if (m->isRead()) {
+        char ch = (char) 175;                                                                                           // aggiunge ">>" prima del messaggio se è stato letto
+        std::cout << ch << " " << std::flush;
+    } else {
+        std::cout << "> " << std::flush;                                                                                // aggiunge ">" prima del messaggio se non è stato ancora letto
+    }
+
     std::cout << m->getSender() << ": " << std::flush;
 
     m->getText();
@@ -17,17 +24,25 @@ void ChatView::getMessages(std::list<std::shared_ptr<Message>> list, bool parame
     if (parameter) {
         std::cout << "\nUltimi 10 messaggi della Chat:" << std::endl;
         for (auto &message: list) {
-            if (message->isRead()) {
-                char ch = (char) 175;                                                                                   // aggiunge ">>" prima del messaggio se è stato letto
-                std::cout << ch << " " << std::flush;
-            } else {
-                std::cout << "> " << std::flush;                                                                        // aggiunge ">" prima del messaggio se non è stato ancora letto
-            }
             writeMessage(message);
         }
     }
     else
         std::cout << "\nLa Chat e' vuota." << std::endl;
+}
+
+std::string ChatView::writeResearchCommand() {
+    std::string s;
+    std::cout << "\nScrivere la parola da ricercare nei messaggi:" << std::endl;
+    std::cin >> s;
+    return s;
+}
+
+void ChatView::correspondingMessage(int quantity, std::string &word) {
+    if (quantity == 0)
+        std::cout << "Non ci sono messaggi che contengono \"" << word << "\"" << std::endl;
+    else
+        std::cout << "Ci sono " << quantity << " messaggi che contengono \"" << word << "\":" << std::endl;
 }
 
 std::string ChatView::writeImportanceCommand() {

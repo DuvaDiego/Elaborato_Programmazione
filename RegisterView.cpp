@@ -8,7 +8,8 @@ void RegisterView::tellInstruction(int parameter) {
         std::cout << "- S| per selezionare una chat" << std::endl;
         std::cout << "- D| per eliminare l'attuale chat" << std::endl;
         std::cout << "- B| per bloccare/sbloccare l'attuale chat" << std::endl;
-        std::cout << "- F| per impostare la preferenza dell'attuale chat" << std::endl;
+        std::cout << "- P| per impostare la preferenza dell'attuale chat" << std::endl;
+        std::cout << "- F| per cercare un messaggio nella chat" << std::endl;
         std::cout << "- I| per impostare l'importanza di un messaggio" << std::endl;
         std::cout << "- 'messaggio'| per scrivere un messaggio nella chat" << std::endl;
     } else if (parameter == 0) {
