@@ -8,6 +8,10 @@ Chat::Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w) : user(mov
 Chat::~Chat() {
     for (auto& message : messagesList)
         message.reset();
+    for (auto& message : savedMessage)
+        message.reset();
+    for (auto& message : messagesFound)
+        message.reset();
     user.reset();
     writer.reset();
 }
@@ -49,27 +53,23 @@ void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     ChatView::writeMessage(newMessage);
 }
 
-void Chat::searchMessages(std::string &word) const {
+void Chat::searchMessages(std::string &word) {
     if (!messagesList.empty()) {
         int corresponding = 0;
-        std::list<std::shared_ptr<Message>> messagesFound;
 
+        messagesFound.erase(messagesFound.begin(), messagesFound.end());
         for (auto &message: messagesList) {
             if (message->searchWord(word)) {
                 messagesFound.push_back(message);
                 corresponding++;
             }
         }
-
-        ChatView::correspondingMessage(corresponding, word);
-        for (auto &message: messagesFound) {
-            ChatView::writeMessage(message);
-        }
+        ChatView::correspondingMessage(corresponding, messagesFound);
     } else
         ChatView::getMessages(messagesList, false);
 }
 
-bool Chat::setMessImportance(unsigned int n) {
+bool Chat::setMessImportance(unsigned int n) { //FIXME: per l'importanza e la cancellazione usare la ricerca del messaggio
     unsigned int quantity = messagesList.size();
     if (!messagesList.empty()) {
         if (n >= 0 && n < 10) {                                                                                         // caso settaggio importanza

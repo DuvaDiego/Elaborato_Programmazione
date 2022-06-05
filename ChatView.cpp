@@ -38,11 +38,18 @@ std::string ChatView::writeResearchCommand() {
     return s;
 }
 
-void ChatView::correspondingMessage(int quantity, std::string &word) {
+void ChatView::correspondingMessage(int quantity, std::list<std::shared_ptr<Message>> mFound) {
     if (quantity == 0)
-        std::cout << "Non ci sono messaggi che contengono \"" << word << "\"" << std::endl;
-    else
-        std::cout << "Ci sono " << quantity << " messaggi che contengono \"" << word << "\":" << std::endl;
+        std::cout << "Non ci sono messaggi che contengono la parola cercata" << std::endl;
+    else {
+        std::cout << "Ci sono " << quantity << " messaggi che contengono la parola cercata:" << std::endl;
+        int i = 1;
+        for (auto &message : mFound) {
+            std::cout << i << ") " << std::flush;
+            writeMessage(message);
+            i++;
+        }
+    }
 }
 
 std::string ChatView::writeImportanceCommand() {

@@ -7,6 +7,8 @@
 #include "SecondaryUser.h"
 #include "ChatView.h"
 
+#define Max 50
+
 class Chat {
 public:
     Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w);
@@ -20,7 +22,7 @@ public:
 
     void getChatMessages() const;
     void writeMessage(std::shared_ptr<Message>& newMessage);
-    void searchMessages(std::string& word) const;
+    void searchMessages(std::string& word);
     bool setMessImportance(unsigned int n);
 
     std::shared_ptr<SecondaryUser> getUser() const;
@@ -34,7 +36,8 @@ private:
     bool blocked;
     std::list<std::shared_ptr<Message>> savedMessage;
     std::list<std::shared_ptr<Message>> messagesList;
-    int maxSavedMessage = 10; //FIXME: rendere la lista più grande (per l'importanza usare la ricerca del messaggio)
+    std::list<std::shared_ptr<Message>> messagesFound;
+    int maxSavedMessage = Max;
     std::shared_ptr<SecondaryUser> user;
     std::shared_ptr<User> writer;
 };

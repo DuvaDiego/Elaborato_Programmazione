@@ -39,41 +39,31 @@ Action getUserAction(std::string firstWord) {
 }
 
 unsigned int convertInInt(std::string s) {
-    char c;
-    if (s == "10")
-        c = '0';
-    else if (s.size() > 1)
-        c = 'x';
-    else
-        c = s.front();
-    switch (c) {
-        case '1':
-            return 0;
-        case '2':
-            return 1;
-        case '3':
-            return 2;
-        case '4':
-            return 3;
-        case '5':
-            return 4;
-        case '6':
-            return 5;
-        case '7':
-            return 6;
-        case '8':
-            return 7;
-        case '9':
-            return 8;
-        case '0':
-            return 9;
-        case 'l':
-            return 10;
-        case 'd':
-            return 11;
-        default:
-            return 12;
+    int i = 52;                                                                                                         // caso valore non valido
+    if (s.size() <= 2) {
+        unsigned char c0 = s.back();
+        unsigned char c1 = '0';
+        if (s.size() == 2)
+            c1 = s.front();
+
+        int i0 = (int) c0;
+        int i1 = (int) c1;
+
+        if ((i0 >= 48 && i0 <= 57) && (i1 >= 48 && i1 <= 57)) {                                                         // caso scelta tra 1 e Max
+            i0 -= 48;
+            i1 -= 48;
+
+            i = i1 * 10 + i0 - 1;
+
+            if (i >= Max)                                                                                               // caso scelta tra Max + 1 e 99
+                i = 52;
+        } else if (c0 == 105 && s.size() == 1) {                                                                        // caso 'i'
+            i = 50;
+        } else if (c0 == 100 && s.size() == 1) {                                                                        // caso 'd'
+            i = 51;
+        }
     }
+    return i;
 }
 
 void tellInstructions(std::shared_ptr<Register> &reg) {
@@ -175,14 +165,15 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             reg->getCurrent()->searchMessages(s);
                             break;
                         }
-                        case Action::setImp: {
+                        case Action::setImp: { /*
                             bool req;
                             do {
                                 std::string s = ChatView::writeImportanceCommand();
                                 unsigned int n = convertInInt(s);
                                 req = reg->getCurrent()->setMessImportance(n);
                             } while (req);
-
+*/
+                        std::cout << "Non funge." << std::endl;
                             break;
                         }
                         case Action::write: {

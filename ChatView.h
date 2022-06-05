@@ -14,7 +14,7 @@ public:
     static void getMessages(std::list<std::shared_ptr<Message>> list, bool parameter);
 
     static std::string writeResearchCommand();
-    static void correspondingMessage(int quantity, std::string &word);
+    static void correspondingMessage(int quantity, std::list<std::shared_ptr<Message>> mFound);
 
     static std::string writeImportanceCommand();
     static void sayImportance(int parameter, unsigned int messageQuantity);
