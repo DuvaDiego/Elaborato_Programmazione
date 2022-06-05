@@ -20,7 +20,8 @@ public:
 
     void getChatMessages() const;
     void writeMessage(std::shared_ptr<Message>& newMessage);
-    void searchMessages(std::string& word);
+    bool searchMessages(std::string& word);
+    bool cancelMessage(unsigned int n);
     bool setMessImportance(unsigned int n);
 
     std::shared_ptr<SecondaryUser> getUser() const;

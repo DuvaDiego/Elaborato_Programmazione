@@ -5,7 +5,7 @@
 #include "PrimaryUser.h"
 
 enum class Action {
-    getReg, create, remove, select, favourites, block, write, find, setImp, quit, noAction
+    getReg, create, remove, select, favourites, block, write, find, cancel, setImp, quit, noAction
 };
 
 Action getUserAction(std::string firstWord) {
@@ -16,6 +16,8 @@ Action getUserAction(std::string firstWord) {
                 return Action::quit;
             case 'F':
                 return Action::find;
+            case 'E':
+                return Action::cancel;
             case 'I':
                 return Action::setImp;
             case 'P':
@@ -39,7 +41,7 @@ Action getUserAction(std::string firstWord) {
 }
 
 unsigned int convertInInt(std::string s) {
-    int i = Max + 2;                                                                                                         // caso valore non valido
+    int i = Max + 3;                                                                                                         // caso valore non valido
     if (s.size() <= 2) {
         unsigned char c0 = s.back();
         unsigned char c1 = '0';
@@ -56,11 +58,13 @@ unsigned int convertInInt(std::string s) {
             i = i1 * 10 + i0 - 1;
 
             if (i >= Max)                                                                                               // caso scelta tra Max + 1 e 99
-                i = Max + 2;
+                i = Max + 3;
         } else if (c0 == 108 && s.size() == 1) {                                                                        // caso 'i'
             i = Max;
         } else if (c0 == 100 && s.size() == 1) {                                                                        // caso 'd'
             i = Max + 1;
+        } else if (c0 == 98 && s.size() == 1) {
+            i = Max + 2;
         }
     }
     return i;
@@ -165,16 +169,26 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             reg->getCurrent()->searchMessages(s);
                             break;
                         }
-                        case Action::setImp: {
+                        case Action::cancel: {
                             std::string s = ChatView::writeResearchCommand();
-                            reg->getCurrent()->searchMessages(s);
+                            bool req = reg->getCurrent()->searchMessages(s);
 
-                            bool req;
-                            do {
+                            while (req) {
+                                std::string i = ChatView::writeGeneralCommand();
+                                unsigned int n = convertInInt(i);
+                                req = reg->getCurrent()->cancelMessage(n);
+                            }
+                            break;
+                        }
+                        case Action::setImp: { // FIXME: se uno vuole ottenere la lista dei messaggi importanti o eliminarla, deve farlo prima di cercare i messaggi
+                            std::string s = ChatView::writeResearchCommand();
+                            bool req = reg->getCurrent()->searchMessages(s);
+
+                            while (req) {
                                 std::string i = ChatView::writeImportanceCommand();
                                 unsigned int n = convertInInt(i);
                                 req = reg->getCurrent()->setMessImportance(n);
-                            } while (req);
+                            }
                             break;
                         }
                         case Action::write: {
