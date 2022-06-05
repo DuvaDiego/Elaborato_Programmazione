@@ -5,6 +5,8 @@
 #include <memory>
 #include "Message.h"
 
+#define Max 50
+
 class ChatView {
 public:
     ChatView() = default;

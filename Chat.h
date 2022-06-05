@@ -7,8 +7,6 @@
 #include "SecondaryUser.h"
 #include "ChatView.h"
 
-#define Max 50
-
 class Chat {
 public:
     Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w);

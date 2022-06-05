@@ -70,15 +70,15 @@ void Chat::searchMessages(std::string &word) {
 }
 
 bool Chat::setMessImportance(unsigned int n) { //FIXME: per l'importanza e la cancellazione usare la ricerca del messaggio
-    unsigned int quantity = messagesList.size();
+    unsigned int quantity = messagesFound.size();
     if (!messagesList.empty()) {
-        if (n >= 0 && n < 10) {                                                                                         // caso settaggio importanza
+        if (n >= 0 && n < Max) {                                                                                        // caso settaggio importanza
             if (n > quantity - 1) {                                                                                     // nel caso ci sono m < 10 messaggi nella chat, si può inserire un numero fino a m
                 ChatView::sayImportance(0, quantity);
                 return true;
             } else {
                 int i = 0;
-                for (auto &message: messagesList) {                                                                     // scorre fino al messaggio desiderato
+                for (auto &message: messagesFound) {                                                                    // scorre fino al messaggio desiderato
                     if (i == n) {                                                                                       // caso settaggio importanza a true
                         if (message->getImportance()) {
                             message->setImportance(false);
@@ -95,7 +95,7 @@ bool Chat::setMessImportance(unsigned int n) { //FIXME: per l'importanza e la ca
                         i++;
                 }
             }
-        } else if (n == 10) {                                                                                           // caso lettura messaggi importanti
+        } else if (n == Max) {                                                                                          // caso lettura messaggi importanti
             if (savedMessage.empty()) {                                                                                 // caso lista messaggi importanti vuota
                 ChatView::sayImportance(3, quantity);
                 return false;
@@ -104,7 +104,7 @@ bool Chat::setMessImportance(unsigned int n) { //FIXME: per l'importanza e la ca
                     ChatView::writeMessage(message);
                 return false;
             }
-        } else if (n == 11) {                                                                                           // caso pulizia messaggi importanti
+        } else if (n == Max + 1) {                                                                                      // caso pulizia messaggi importanti
             ChatView::sayImportance(4, quantity);
             return false;
         }
