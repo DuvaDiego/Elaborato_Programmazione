@@ -40,8 +40,8 @@ Action getUserAction(std::string firstWord) {
     }
 }
 
-unsigned int convertInInt(std::string s) {
-    int i = Max + 3;                                                                                                         // caso valore non valido
+unsigned int convertInInt(std::string s, bool parameter) {
+    int i = Max + 4;                                                                                                    // caso valore non valido
     if (s.size() <= 2) {
         unsigned char c0 = s.back();
         unsigned char c1 = '0';
@@ -51,20 +51,26 @@ unsigned int convertInInt(std::string s) {
         int i0 = (int) c0;
         int i1 = (int) c1;
 
-        if ((i0 >= 48 && i0 <= 57) && (i1 >= 48 && i1 <= 57)) {                                                         // caso scelta tra 1 e Max
-            i0 -= 48;
-            i1 -= 48;
+        if (!parameter) {
+            if ((i0 >= 48 && i0 <= 57) && (i1 >= 48 && i1 <= 57)) {                                                     // caso scelta tra 1 e Max
+                i0 -= 48;
+                i1 -= 48;
 
-            i = i1 * 10 + i0 - 1;
+                i = i1 * 10 + i0 - 1;
 
-            if (i >= Max)                                                                                               // caso scelta tra Max + 1 e 99
+                if (i >= Max)                                                                                           // caso scelta tra Max + 1 e 99
+                    i = Max + 4;
+            } else if (c0 == 98 && s.size() == 1) {                                                                     // caso 'b'
+                i = Max + 2;
+            }
+        } else {
+            if (c0 == 108 && s.size() == 1) {                                                                           // caso 'l'
+                i = Max;
+            } else if (c0 == 100 && s.size() == 1) {                                                                    // caso 'd'
+                i = Max + 1;
+            } else if (c0 == 115 && s.size() == 1) {                                                                    // caso 's'
                 i = Max + 3;
-        } else if (c0 == 108 && s.size() == 1) {                                                                        // caso 'i'
-            i = Max;
-        } else if (c0 == 100 && s.size() == 1) {                                                                        // caso 'd'
-            i = Max + 1;
-        } else if (c0 == 98 && s.size() == 1) {
-            i = Max + 2;
+            }
         }
     }
     return i;
@@ -175,20 +181,27 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
 
                             while (req) {
                                 std::string i = ChatView::writeGeneralCommand();
-                                unsigned int n = convertInInt(i);
+                                unsigned int n = convertInInt(i, false);
                                 req = reg->getCurrent()->cancelMessage(n);
                             }
                             break;
                         }
-                        case Action::setImp: { // FIXME: se uno vuole ottenere la lista dei messaggi importanti o eliminarla, deve farlo prima di cercare i messaggi
-                            std::string s = ChatView::writeResearchCommand();
-                            bool req = reg->getCurrent()->searchMessages(s);
+                        case Action::setImp: {
+                            std::string s = ChatView::writeImportanceCommand();
+                            unsigned int n = convertInInt(s, true);
 
-                            while (req) {
-                                std::string i = ChatView::writeImportanceCommand();
-                                unsigned int n = convertInInt(i);
-                                req = reg->getCurrent()->setMessImportance(n);
-                            }
+                            if (n == Max + 3) {
+                                std::string s = ChatView::writeResearchCommand();
+                                bool req = reg->getCurrent()->searchMessages(s);
+
+                                do {
+                                    std::string i = ChatView::writeGeneralCommand();
+                                    unsigned int m = convertInInt(i, false);
+
+                                    req = reg->getCurrent()->setMessImportance(m);
+                                } while (req);
+                            } else
+                                reg->getCurrent()->setMessImportance(n);
                             break;
                         }
                         case Action::write: {

@@ -76,28 +76,28 @@ bool Chat::cancelMessage(unsigned int n) {
     unsigned int quantity = messagesFound.size();
     if (n >= 0 && n < Max) {                                                                                            // caso eliminazione messaggio
         if (n > quantity - 1) {                                                                                         // nel caso ci sono m < Max messaggi nella chat, si può inserire un numero fino a m
-            ChatView::eliminationSuccess(0, quantity);
+            ChatView::selectionCase(0, quantity);
             return true;
         } else {
             int i = 0;
             for (auto &message: messagesFound) {                                                                        // scorre fino al messaggio desiderato
-                if (i == n) {
+                if (i == n) {                                                                                           // elimina il messaggio scelto
                     std::string cancelText = "Messaggio eliminato.";
                     std::list<std::string> text;
                     text.push_back(cancelText);
                     message->setText(text);
 
-                    ChatView::eliminationSuccess(1, quantity);
+                    ChatView::selectionCase(1, quantity);
                     return false;
                 } else
                     i++;
             }
         }
     } else if (n == Max + 2) {                                                                                          // caso annulla operazione
-        ChatView::eliminationSuccess(2, quantity);
+        ChatView::selectionCase(6, quantity);
         return false;
     }
-    ChatView::eliminationSuccess(3, quantity);                                                                 // caso carattere non valido
+    ChatView::selectionCase(7, quantity);                                                                      // caso carattere non valido
     return true;
 }
 
@@ -105,7 +105,7 @@ bool Chat::setMessImportance(unsigned int n) {
     unsigned int quantity = messagesFound.size();
     if (n >= 0 && n < Max) {                                                                                            // caso settaggio importanza
         if (n > quantity - 1) {                                                                                         // nel caso ci sono m < Max messaggi nella chat, si può inserire un numero fino a m
-            ChatView::sayImportance(0, quantity);
+            ChatView::selectionCase(0, quantity);
             return true;
         } else {
             int i = 0;
@@ -113,11 +113,11 @@ bool Chat::setMessImportance(unsigned int n) {
                 if (i == n) {                                                                                           // caso settaggio importanza a true
                     if (message->getImportance()) {
                         message->setImportance(false);
-                        ChatView::sayImportance(1, quantity);
+                        ChatView::selectionCase(2, quantity);
                         savedMessage.remove(message);
                     } else {                                                                                            // caso settaggio importanza a false
                         message->setImportance(true);
-                        ChatView::sayImportance(2, quantity);
+                        ChatView::selectionCase(3, quantity);
                         savedMessage.push_back(message);
                     }
                     ChatView::writeMessage(message);
@@ -128,7 +128,7 @@ bool Chat::setMessImportance(unsigned int n) {
         }
     } else if (n == Max) {                                                                                              // caso lettura messaggi importanti
         if (savedMessage.empty()) {                                                                                     // caso lista messaggi importanti vuota
-            ChatView::sayImportance(3, quantity);
+            ChatView::selectionCase(4, quantity);
             return false;
         } else {
             for (std::shared_ptr<Message> message: savedMessage)
@@ -136,10 +136,13 @@ bool Chat::setMessImportance(unsigned int n) {
             return false;
         }
     } else if (n == Max + 1) {                                                                                          // caso pulizia messaggi importanti
-        ChatView::sayImportance(4, quantity);
+        ChatView::selectionCase(5, quantity);
+        return false;
+    } else if (n == Max + 2) {
+        ChatView::selectionCase(6, quantity);                                                                  // caso annulla operazione
         return false;
     }
-    ChatView::sayImportance(5, quantity);                                                                      // caso carattere non valido
+    ChatView::selectionCase(7, quantity);                                                                      // caso carattere non valido
     return true;
 }
 

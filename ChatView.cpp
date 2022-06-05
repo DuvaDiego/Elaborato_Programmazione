@@ -62,7 +62,7 @@ std::string ChatView::writeGeneralCommand() {
     return s;
 }
 
-void ChatView::eliminationSuccess(int parameter, unsigned int messageQuantity) {
+void ChatView::selectionCase(int parameter, unsigned int messageQuantity) {
     if (parameter == 0) {
         std::cout << "\nI messaggi trovati sono " << messageQuantity << "." << std::endl;
         std::cout << "Il numero massimo che puoi inserire e' " << messageQuantity << std::endl;
@@ -70,6 +70,14 @@ void ChatView::eliminationSuccess(int parameter, unsigned int messageQuantity) {
     else if (parameter == 1)
         std::cout << "Messaggio eliminato " << std::endl;
     else if (parameter == 2)
+        std::cout << "Messaggio non piu' importante " << std::flush;
+    else if (parameter == 3)
+        std::cout << "Messaggio importante " << std::flush;
+    else if (parameter == 4)
+        std::cout << "Non ci sono messaggi importanti in questa Chat." << std::endl;
+    else if (parameter == 5)
+        std::cout << "Lista messaggi importanti svuotata." << std::endl;
+    else if (parameter == 6)
         std::cout << "Operazione annullata." << std::endl;
     else
         std::cout << "Carattere non valido." << std::endl;
@@ -78,26 +86,9 @@ void ChatView::eliminationSuccess(int parameter, unsigned int messageQuantity) {
 std::string ChatView::writeImportanceCommand() {
     std::string s;
     std::cout << "\nInserire:" << std::endl;
-    std::cout << "- un numero da 1 a " << Max << ", per rendere importante il messaggio cercato corrispondente" << std::endl;
+    std::cout << "- 's', per cercare un messaggio da rendere importante" << std::endl;
     std::cout << "- 'l', per ottenere la lista dei messaggi importanti" << std::endl;
     std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
     std::cin >> s;
     return s;
-}
-
-void ChatView::sayImportance(int parameter, unsigned int messageQuantity) {
-    if (parameter == 0) {
-        std::cout << "\nI messaggi trovati sono " << messageQuantity << "." << std::endl;
-        std::cout << "Il numero massimo che puoi inserire e' " << messageQuantity << std::endl;
-    }
-    else if (parameter == 1)
-        std::cout << "Messaggio non piu' importante " << std::flush;
-    else if (parameter == 2)
-        std::cout << "Messaggio importante " << std::flush;
-    else if (parameter == 3)
-        std::cout << "Non ci sono messaggi importanti in questa Chat." << std::endl;
-    else if (parameter == 4)
-        std::cout << "Lista messaggi importanti svuotata." << std::endl;
-    else
-        std::cout << "Carattere non valido." << std::endl;
 }

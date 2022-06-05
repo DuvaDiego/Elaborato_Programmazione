@@ -76,7 +76,12 @@ bool Message::isEgual(std::string word, std::string model) {
     std::string simpleLowercaseModel = lowercaseModel;                                                                  // variante del modello con lettera minuscola e punteggiatura in fondo
     simpleLowercaseModel.pop_back();
 
+    std::string simpleWord = word;
+    simpleWord.pop_back();
+
     if(word == model || word == capitalModel || word == lowercaseModel || word == simpleModel || word == simpleCapitalModel || word == simpleLowercaseModel)
+        return true;
+    else if (simpleWord == model || simpleWord == capitalModel || simpleWord == lowercaseModel || simpleWord == simpleModel || simpleWord == simpleCapitalModel || simpleWord == simpleLowercaseModel)
         return true;
     else
         return false;
