@@ -9,7 +9,7 @@ TEST(Register, RegisterCtor) {
     ASSERT_EQ(true, reg->isEmpty());
 }
 
-TEST(Register,EmptyRegisterTest) {
+TEST(Register, EmptyRegisterTest) {
     std::shared_ptr<User> u = std::make_shared<User>("Utente");
     std::shared_ptr<SecondaryUser> s = std::make_shared<SecondaryUser>("Persona");
     std::shared_ptr<Chat> c = std::make_shared<Chat>(s, u);
@@ -19,4 +19,17 @@ TEST(Register,EmptyRegisterTest) {
 
     reg->removeChat();
     ASSERT_EQ(true, reg->isEmpty());
+}
+
+TEST(Register, SearchChat) {
+    std::shared_ptr<User> u = std::make_shared<User>("Utente");
+    std::shared_ptr<SecondaryUser> s = std::make_shared<SecondaryUser>("Persona");
+    std::shared_ptr<Chat> c = std::make_shared<Chat>(s, u);
+    reg->addInChatList(c);
+
+    std::string word = "Persona";
+    ASSERT_EQ(true, reg->searchChat(word));
+
+    word = "Individuo";
+    ASSERT_EQ(false, reg->searchChat(word));
 }

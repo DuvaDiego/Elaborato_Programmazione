@@ -3,19 +3,26 @@
 
 #include <iostream>
 #include <memory>
+#include "Register.h"
 #include "Chat.h"
 
 class RegisterView {
 public:
-    RegisterView() = default;
-    ~RegisterView() = default;
+    explicit RegisterView(std::shared_ptr<Register> r);
+    ~RegisterView();
 
-    static void tellInstruction(int parameter);
-    static std::string writeNameChat(int parameter);
-    static void writeChats(std::list<std::shared_ptr<Chat>> list);
-    static void tellCurrentChat(std::string name);
-    static void tellStateChat(std::string name, int parameter, bool parValue);
-    static void closeRegister();
+    void tellInstruction(int parameter);
+
+    std::string writeNameChat(int parameter);
+    void getChatList();
+    void tellCurrentChat(std::string name);
+    void tellStateChat(std::string name, int parameter, bool parValue);
+    void closeRegister();
+
+    std::shared_ptr<Register> getRegister();
+
+private:
+    std::shared_ptr<Register> aRegister;
 };
 
 

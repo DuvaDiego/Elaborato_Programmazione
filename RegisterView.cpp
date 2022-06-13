@@ -1,5 +1,12 @@
 #include "RegisterView.h"
 
+RegisterView::RegisterView(std::shared_ptr<Register> r) : aRegister(move(r)) {
+}
+
+RegisterView::~RegisterView() {
+    aRegister.reset();
+}
+
 void RegisterView::tellInstruction(int parameter) {
     if (parameter == 1) {
         std::cout << "\nDigitare:" << std::endl;
@@ -30,12 +37,16 @@ std::string RegisterView::writeNameChat(int parameter) {
     return name;
 }
 
-void RegisterView::writeChats(std::list<std::shared_ptr<Chat>> list) {
+void RegisterView::getChatList() {
+    int quantity = aRegister->getChatQuantity();
+    std::shared_ptr<Chat> chat;
+
     std::cout << "\nRegistro Chat:" << std::endl;
-    for (auto &chat: list) {
+    for (int i = 0; i < quantity; i++) {
+        chat = aRegister->getChat(i);
         std::cout << "- " << chat->getName() << std::flush;
         if (chat->getUser()->isFavourite()) {
-            char ch = (char) 3;                                                                                     // aggiunge un cuore dopo il nome della chat
+            char ch = (char) 3;                                                                                         // aggiunge un cuore dopo il nome della chat
             std::cout << "  " << ch << std::flush;
         }
         std::cout << std::endl;
@@ -69,4 +80,8 @@ void RegisterView::tellStateChat(std::string name, int parameter, bool parValue)
 
 void RegisterView::closeRegister() {
     std::cout << "\nProgramma chiuso, registro eliminato." << std::endl;
+}
+
+std::shared_ptr<Register> RegisterView::getRegister() {
+    return aRegister;
 }

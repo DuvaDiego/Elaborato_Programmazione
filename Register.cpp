@@ -2,6 +2,7 @@
 
 Register::Register(std::string o) : owner(move(o)) {
     currentChat = nullptr;
+    chatQuantity = 0;
 }
 
 Register::~Register() {
@@ -10,8 +11,14 @@ Register::~Register() {
     currentChat.reset();
 }
 
-void Register::getChatList() const {
-    RegisterView::writeChats(chatList);
+std::shared_ptr<Chat> Register::getChat(int number) const {
+    auto it = chatList.begin();
+    int i = 0;
+    while (i < number) {
+        it++;
+        i++;
+    }
+    return it.operator*();
 }
 
 bool Register::isEmpty() const {
@@ -30,38 +37,32 @@ void Register::addInChatList(std::shared_ptr<Chat> &newChat) {
     }
     chatList.insert(it, newChat);
     currentChat = newChat;
-    RegisterView::tellCurrentChat(currentChat->getName());
+    chatQuantity++;
 }
 
 void Register::removeChat() {
-    RegisterView::tellStateChat(currentChat->getName(), 0, false);
-
     chatList.remove(currentChat);
     currentChat.reset();
     if (!isEmpty()) {
         currentChat = chatList.front();
-        RegisterView::tellCurrentChat(currentChat->getName());
     }
     else
         currentChat = nullptr;
+    chatQuantity--;
 }
 
-void Register::searchChat(std::string& nameChat) {
-    bool chatFound = false;
+bool Register::searchChat(std::string& nameChat) {
     for (auto& chat : chatList) {
         if (chat->getName() == nameChat) {
             currentChat = chat;
-            chatFound = true;
-            break;
+            return true;
         }
     }
-    if (!chatFound)
-        RegisterView::tellStateChat(nameChat, 0, false);
+    return false;
 }
 
 void Register::addInFavourites() {
     if (currentChat->getUser()->isFavourite()) {
-        RegisterView::tellStateChat(currentChat->getName(), 1, true);
         currentChat->getUser()->setFavouritism(false);
 
         chatList.remove(currentChat);
@@ -74,7 +75,6 @@ void Register::addInFavourites() {
         }
         chatList.insert(it, currentChat);
     } else {
-        RegisterView::tellStateChat(currentChat->getName(), 1, false);
         currentChat->getUser()->setFavouritism(true);
 
         chatList.remove(currentChat);
@@ -84,10 +84,8 @@ void Register::addInFavourites() {
 
 void Register::blockChat() {
     if (currentChat->isBlocked()) {
-        RegisterView::tellStateChat(currentChat->getName(), 2, true);
         currentChat->setBlock(false);
     } else {
-        RegisterView::tellStateChat(currentChat->getName(), 2, false);
         currentChat->setBlock(true);
     }
 }
@@ -102,4 +100,8 @@ void Register::setCurrent(std::shared_ptr<Chat> newCurrent) {
 
 std::string Register::getOwner() const {
     return owner;
+}
+
+int Register::getChatQuantity() const {
+    return chatQuantity;
 }

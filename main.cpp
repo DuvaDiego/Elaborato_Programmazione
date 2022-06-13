@@ -3,6 +3,7 @@
 
 #include "User.h"
 #include "PrimaryUser.h"
+#include "RegisterView.h"
 
 enum class Action {
     getReg, create, remove, select, favourites, block, write, find, cancel, setImp, quit, noAction
@@ -76,15 +77,15 @@ unsigned int convertInInt(std::string s, bool parameter) {
     return i;
 }
 
-void tellInstructions(std::shared_ptr<Register> &reg) {
-    if (!reg->isEmpty()) {
-        RegisterView::tellInstruction(1);
+void tellInstructions(std::shared_ptr<RegisterView> &regView) {
+    if (!regView->getRegister()->isEmpty()) {
+        regView->tellInstruction(1);
     } else {
-        RegisterView::tellInstruction(0);
+        regView->tellInstruction(0);
     }
 }
 
-void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
+void writeMessages(std::shared_ptr<PrimaryUser> &user, std::shared_ptr<RegisterView> &regView, std::list<std::string> &message, std::shared_ptr<Chat> currentChat) {
     if (!currentChat->isBlocked()) {
         if (message.front().front() != '|') {
             std::string lastWord = message.back();                                                                      // Toglie dal messaggio il simbolo '|' di chiusura
@@ -106,83 +107,100 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::list<std::string> &m
         }
     }
     else
-        RegisterView::tellStateChat(currentChat->getName(), 2, false);
+        regView->tellStateChat(currentChat->getName(), 2, false);
 }
 
 
-bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<Register> reg, std::list<std::string> &message) {
+bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::shared_ptr<RegisterView> &regView, std::list<std::string> &message) {
+    std::shared_ptr<Register> reg = regView->getRegister();
     if (reg->getCurrent() != nullptr && reg->getCurrent()->getWriter() != user) {                                       // quando è il turno dell'altra persona parlare non si può eseguire alcuna azione
-        writeMessages(user, message, reg->getCurrent());
+        writeMessages(user, regView, message, reg->getCurrent());
     } else {
         switch (action) {
             case Action::create: {
-                std::string person = RegisterView::writeNameChat(0);
+                std::string person = regView->writeNameChat(0);
                 std::shared_ptr<SecondaryUser> aPerson = std::make_shared<SecondaryUser>(person);
 
                 std::shared_ptr<Chat> aChat = std::make_shared<Chat>(aPerson, user);
                 reg->addInChatList(aChat);
+                regView->tellCurrentChat(person);
 
-                tellInstructions(reg);
+                tellInstructions(regView);
                 break;
             }
             case Action::noAction:
                 break;
             case Action::quit: {
-                RegisterView::closeRegister();
+                regView->closeRegister();
                 return true;
             }
             default: {
                 if (!reg->isEmpty()) {
+                    std::shared_ptr<Chat> currentChat = reg->getCurrent();
                     switch (action) {
                         case Action::getReg: {
-                            reg->getChatList();
+                            regView->getChatList();
                             break;
                         }
                         case Action::select: {
-                            reg->getChatList();
-                            std::string nameChat = RegisterView::writeNameChat(1);
+                            regView->getChatList();
+                            std::string nameChat = regView->writeNameChat(1);
 
-                            reg->searchChat(nameChat);
-                            RegisterView::tellCurrentChat(reg->getCurrent()->getName());                          // se la chat che si sta cercando non è nel registro si rimane nella chat dove ci si trovava
+                            bool found = reg->searchChat(nameChat);
+                            if (!found)
+                                regView->tellStateChat(nameChat, 0, false);
 
-                            tellInstructions(reg);
-                            reg->getCurrent()->getChatMessages();
-                            if (reg->getCurrent()->isBlocked())
-                                RegisterView::tellStateChat(reg->getCurrent()->getName(), 2, false);
+                            regView->tellCurrentChat(currentChat->getName());                                     // se la chat che si sta cercando non è nel registro si rimane nella chat dove ci si trovava
+
+                            tellInstructions(regView);
+                            currentChat->getChatMessages();
+                            if (currentChat->isBlocked())
+                                regView->tellStateChat(currentChat->getName(), 2, false);
                             break;
                         }
                         case Action::remove: {
                             if (!reg->isEmpty()) {
+                                regView->tellStateChat(currentChat->getName(), 0, true);
                                 reg->removeChat();
+                                currentChat = reg->getCurrent();
 
-                                tellInstructions(reg);
-                                if (reg->getCurrent() != nullptr) {
-                                    reg->getCurrent()->getChatMessages();
+                                regView->tellCurrentChat(currentChat->getName());
+                                tellInstructions(regView);
+                                if (currentChat != nullptr) {
+                                    currentChat->getChatMessages();
                                 }
                             }
                             break;
                         }
                         case Action::favourites: {
+                            if (currentChat->getUser()->isFavourite())
+                                regView->tellStateChat(currentChat->getName(), 1, true);
+                            else
+                                regView->tellStateChat(currentChat->getName(), 1, false);
                             reg->addInFavourites();
                             break;
                         }
                         case Action::block: {
+                            if (currentChat->isBlocked())
+                                regView->tellStateChat(currentChat->getName(), 2, true);
+                            else
+                                regView->tellStateChat(currentChat->getName(), 2, false);
                             reg->blockChat();
                             break;
                         }
                         case Action::find: {
                             std::string s = ChatView::writeResearchCommand();
-                            reg->getCurrent()->searchMessages(s);
+                            currentChat->searchMessages(s);
                             break;
                         }
                         case Action::cancel: {
                             std::string s = ChatView::writeResearchCommand();
-                            bool req = reg->getCurrent()->searchMessages(s);
+                            bool req = currentChat->searchMessages(s);
 
                             while (req) {
                                 std::string i = ChatView::writeGeneralCommand();
                                 unsigned int n = convertInInt(i, false);
-                                req = reg->getCurrent()->cancelMessage(n);
+                                req = currentChat->cancelMessage(n);
                             }
                             break;
                         }
@@ -192,20 +210,20 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
 
                             if (n == Max + 3) {
                                 std::string s = ChatView::writeResearchCommand();
-                                bool req = reg->getCurrent()->searchMessages(s);
+                                bool req = currentChat->searchMessages(s);
 
                                 do {
                                     std::string i = ChatView::writeGeneralCommand();
                                     unsigned int m = convertInInt(i, false);
 
-                                    req = reg->getCurrent()->setMessImportance(m);
+                                    req = currentChat->setMessImportance(m);
                                 } while (req);
                             } else
-                                reg->getCurrent()->setMessImportance(n);
+                                currentChat->setMessImportance(n);
                             break;
                         }
                         case Action::write: {
-                            writeMessages(user, message, reg->getCurrent());
+                            writeMessages(user, regView, message, currentChat);
                              break;
                         }
                     }
@@ -219,8 +237,9 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
 int main() {
     std::shared_ptr<Register> WhatsApp(new Register());
     std::shared_ptr<PrimaryUser> Diego = std::make_shared<PrimaryUser>(WhatsApp);
+    std::shared_ptr<RegisterView> regView = std::make_shared<RegisterView>(WhatsApp);
 
-    tellInstructions(WhatsApp);
+    tellInstructions(regView);
     while (true) {
         std::list<std::string> message;
         std::string input;
@@ -234,7 +253,7 @@ int main() {
         }
 
         Action action = getUserAction(message.front());
-        bool quit =doUserAction(Diego ,action, WhatsApp, message);
+        bool quit =doUserAction(Diego ,action, regView, message);
 
         if (quit) {
             Diego.reset();

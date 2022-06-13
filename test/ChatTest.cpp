@@ -20,7 +20,7 @@ TEST(Chat, SetImportanceTest) {
     std::list<std::string> t;
 
     int n = 0;
-    ASSERT_EQ(false, c->setMessImportance(n));                                                                // test chat vuota
+    ASSERT_EQ(false, c->setMessImportance(n)); //FIXME: test non superato                                                               // test chat vuota
 
     t.push_front(w);
     std::shared_ptr<Message> m = std::make_shared<Message>(t, p, r);

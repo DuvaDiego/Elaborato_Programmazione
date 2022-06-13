@@ -16,7 +16,7 @@ void Message::setText(std::list<std::string> newText) {
 
 bool Message::searchWord(std::string word) const {
     for (auto& w : text) {
-        if(isEgual(word, w))
+        if(isEqual(word, w))
             return true;
     }
     return false;
@@ -54,7 +54,7 @@ void Message::setRecipient(std::string newRecipient) {
     recipient = move(newRecipient);
 }
 
-bool Message::isEgual(std::string word, std::string model) {
+bool Message::isEqual(std::string word, std::string model) {
     std::string capitalModel = model;                                                                                   // variante del modello con lettera maiuscola
     int iMaiusc = (int) model.front() - 32;
     char lMaiusc = (char) iMaiusc;
