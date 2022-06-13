@@ -3,6 +3,8 @@
 Chat::Chat(std::shared_ptr<SecondaryUser> u, std::shared_ptr<User> w) : user(move(u)), writer(move(w)) {
     nameChat = user->getName();
     blocked = false;
+    quantity = 0;
+    quantityFound = 0;
 }
 
 Chat::~Chat() {
@@ -32,16 +34,30 @@ void Chat::setBlock(bool newSetup) {
     blocked = newSetup;
 }
 
-void Chat::getChatMessages() const {
-    if (!messagesList.empty()) {
-        ChatView::getMessages(messagesList, true);
-    } else
-        ChatView::getMessages(messagesList, false);
+std::shared_ptr<Message> Chat::getMessage(int number) const {
+    auto it = messagesList.begin();
+    int i = 0;
+    while (i < number) {
+        it++;
+        i++;
+    }
+    return it.operator*();
+}
+
+std::shared_ptr<Message> Chat::getFoundMessage(int number) const {
+    auto it = messagesFound.begin();
+    int i = 0;
+    while (i < number) {
+        it++;
+        i++;
+    }
+    return it.operator*();
 }
 
 void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     if (messagesList.size() == maxSavedMessage) {
         messagesList.pop_front();
+        quantity--;
     }
 
     if (!messagesList.empty()) {
@@ -49,31 +65,28 @@ void Chat::writeMessage(std::shared_ptr<Message> &newMessage) {
     }
 
     messagesList.push_back(newMessage);
-
-    ChatView::writeMessage(newMessage);
+    quantity++;
 }
 
 bool Chat::searchMessages(std::string &word) {
     if (!messagesList.empty()) {
-        int corresponding = 0;
 
         messagesFound.erase(messagesFound.begin(), messagesFound.end());
+        quantityFound = 0;
         for (auto &message: messagesList) {
             if (message->searchWord(word)) {
                 messagesFound.push_back(message);
-                corresponding++;
+                quantityFound++;
             }
         }
-        ChatView::correspondingMessage(corresponding, messagesFound);
-        if (corresponding != 0)
+        if (quantityFound != 0)
             return true;
-    } else
-        ChatView::getMessages(messagesList, false);
+    }
     return false;
 }
 
 bool Chat::cancelMessage(unsigned int n) {
-    unsigned int quantity = messagesFound.size();
+    /*unsigned int quantity = messagesFound.size();
     if (n >= 0 && n < Max) {                                                                                            // caso eliminazione messaggio
         if (n > quantity - 1) {                                                                                         // nel caso ci sono m < Max messaggi nella chat, si può inserire un numero fino a m
             ChatView::selectionCase(0, quantity);
@@ -98,11 +111,12 @@ bool Chat::cancelMessage(unsigned int n) {
         return false;
     }
     ChatView::selectionCase(7, quantity);                                                                      // caso carattere non valido
-    return true;
+    return true;*/
+    return false;
 }
 
 bool Chat::setMessImportance(unsigned int n) {
-    unsigned int quantity = messagesFound.size();
+    /*unsigned int quantity = messagesFound.size();
     if (n >= 0 && n < Max) {                                                                                            // caso settaggio importanza
         if (n > quantity - 1) {                                                                                         // nel caso ci sono m < Max messaggi nella chat, si può inserire un numero fino a m
             ChatView::selectionCase(0, quantity);
@@ -143,7 +157,8 @@ bool Chat::setMessImportance(unsigned int n) {
         return false;
     }
     ChatView::selectionCase(7, quantity);                                                                      // caso carattere non valido
-    return true;
+    return true;*/
+    return false;
 }
 
 std::shared_ptr<SecondaryUser> Chat::getUser() const {
@@ -160,4 +175,12 @@ std::shared_ptr<User> Chat::getWriter() const {
 
 void Chat::setWriter(std::shared_ptr<User> newWriter) {
     writer = move(newWriter);
+}
+
+int Chat::getMessageQuantity() const {
+    return quantity;
+}
+
+int Chat::getFoundQuantity() const {
+    return quantityFound;
 }

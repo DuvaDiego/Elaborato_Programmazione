@@ -4,23 +4,27 @@
 #include <iostream>
 #include <memory>
 #include "Message.h"
-
-static const int Max = 50;
+#include "Chat.h"
 
 class ChatView {
 public:
-    ChatView() = default;
+    explicit ChatView(std::shared_ptr<Chat> c);
     ~ChatView() = default;
 
-    static void writeMessage(std::shared_ptr<Message> &m);
-    static void getMessages(std::list<std::shared_ptr<Message>> list, bool parameter);
+    void writeMessage(std::shared_ptr<Message> &m);
+    void getMessages();
 
-    static std::string writeResearchCommand();
-    static void correspondingMessage(int quantity, std::list<std::shared_ptr<Message>> mFound);
+    std::string writeResearchCommand();
+    void getFoundMessages();
 
-    static std::string writeGeneralCommand();
-    static void selectionCase(int parameter, unsigned int messageQuantity);
-    static std::string writeImportanceCommand();
+    std::string writeGeneralCommand();
+    void selectionCase(int parameter, unsigned int messageQuantity);
+    std::string writeImportanceCommand();
+
+    void associateChat(std::shared_ptr<Chat> newChat);
+
+private:
+    std::shared_ptr<Chat> aChat;
 };
 
 

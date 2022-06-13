@@ -5,7 +5,8 @@
 #include <memory>
 #include "Message.h"
 #include "SecondaryUser.h"
-#include "ChatView.h"
+
+static const int Max = 50;
 
 class Chat {
 public:
@@ -18,7 +19,9 @@ public:
     bool isBlocked() const;
     void setBlock(bool newSetup);
 
-    void getChatMessages() const;
+    std::shared_ptr<Message> getMessage(int number) const;
+    std::shared_ptr<Message> getFoundMessage(int number) const;
+
     void writeMessage(std::shared_ptr<Message>& newMessage);
     bool searchMessages(std::string& word);
     bool cancelMessage(unsigned int n);
@@ -30,6 +33,9 @@ public:
     std::shared_ptr<User> getWriter() const;
     void setWriter(std::shared_ptr<User> newWriter);
 
+    int getMessageQuantity() const;
+    int getFoundQuantity() const;
+
 private:
     std::string nameChat;
     bool blocked;
@@ -37,6 +43,8 @@ private:
     std::list<std::shared_ptr<Message>> messagesList;
     std::list<std::shared_ptr<Message>> messagesFound;
     int maxSavedMessage = Max;
+    int quantity;
+    int quantityFound;
     std::shared_ptr<SecondaryUser> user;
     std::shared_ptr<User> writer;
 };

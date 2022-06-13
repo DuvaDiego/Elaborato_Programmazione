@@ -4,7 +4,6 @@
 #include <iostream>
 #include <list>
 #include "Chat.h"
-//#include "RegisterView.h"
 
 static const std::string regOwner = "Diego";
 

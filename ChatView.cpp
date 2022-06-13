@@ -1,5 +1,7 @@
 #include "ChatView.h"
 
+ChatView::ChatView(std::shared_ptr<Chat> c) : aChat(move(c)) {
+}
 
 void ChatView::writeMessage(std::shared_ptr<Message> &m) {
     if (m->isRead()) {
@@ -20,15 +22,17 @@ void ChatView::writeMessage(std::shared_ptr<Message> &m) {
     std::cout << std::endl;
 }
 
-void ChatView::getMessages(std::list<std::shared_ptr<Message>> list, bool parameter) {
-    int quantity = list.size();
-    if (parameter) {
+void ChatView::getMessages() {
+    int quantity = aChat->getMessageQuantity();
+    if (quantity != 0) {
+        std::shared_ptr<Message> message;
+
         std::cout << "\nUltimi " << quantity << " messaggi della Chat:" << std::endl;
-        for (auto &message: list) {
+        for (int i = 0; i < quantity; i++) {
+            message = aChat->getMessage(i);
             writeMessage(message);
         }
-    }
-    else
+    } else
         std::cout << "\nLa Chat e' vuota." << std::endl;
 }
 
@@ -39,18 +43,19 @@ std::string ChatView::writeResearchCommand() {
     return s;
 }
 
-void ChatView::correspondingMessage(int quantity, std::list<std::shared_ptr<Message>> mFound) {
-    if (quantity == 0)
-        std::cout << "Non ci sono messaggi che contengono la parola cercata" << std::endl;
-    else {
+void ChatView::getFoundMessages() {
+    int quantity = aChat->getFoundQuantity();
+    if (quantity != 0) {
+        std::shared_ptr<Message> message;
+
         std::cout << "Ci sono " << quantity << " messaggi che contengono la parola cercata:" << std::endl;
-        int i = 1;
-        for (auto &message : mFound) {
-            std::cout << i << ") " << std::flush;
+        for (int i = 0; i < quantity; i++) {
+            message = aChat->getFoundMessage(i);
+            std::cout << i + 1 << ") " << std::flush;
             writeMessage(message);
-            i++;
         }
-    }
+    } else
+        std::cout << "Non ci sono messaggi che contengono la parola cercata" << std::endl;
 }
 
 std::string ChatView::writeGeneralCommand() {
@@ -91,4 +96,8 @@ std::string ChatView::writeImportanceCommand() {
     std::cout << "- 'd', per svuotare la lista dei messaggi importanti" << std::endl;
     std::cin >> s;
     return s;
+}
+
+void ChatView::associateChat(std::shared_ptr<Chat> newChat) {
+    aChat = newChat;
 }
