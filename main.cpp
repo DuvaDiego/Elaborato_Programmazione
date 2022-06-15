@@ -1,7 +1,6 @@
 #include <iostream>
 #include <memory>
 
-#include "User.h"
 #include "PrimaryUser.h"
 #include "RegisterView.h"
 #include "ChatView.h"
@@ -96,16 +95,16 @@ void writeMessages(std::shared_ptr<PrimaryUser> &user, std::shared_ptr<RegisterV
 
             std::shared_ptr<ChatView> chatView = std::make_shared<ChatView>(currentChat);
 
-            if (currentChat->getWriter() == user) {
+            if (currentChat->getWriter() == user) {                                                                     // Turno del proprietario del registro
                 std::shared_ptr<Message> sentMess = std::make_shared<Message>(message, user->getName(),currentChat->getUser()->getName());
                 currentChat->writeMessage(sentMess);
-                chatView->writeMessage(sentMess);
+                chatView->writeTextMessage(sentMess);
 
                 currentChat->setWriter(currentChat->getUser());
-            } else {
+            } else {                                                                                                    // Turno dell'altro utente
                 std::shared_ptr<Message> receivedMess = std::make_shared<Message>(message,currentChat->getUser()->getName(), user->getName());
                 currentChat->writeMessage(receivedMess);
-                chatView->writeMessage(receivedMess);
+                chatView->writeTextMessage(receivedMess);
 
                 currentChat->setWriter(user);
             }
@@ -123,7 +122,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
     } else {
         switch (action) {
             case Action::create: {
-                std::string person = regView->writeNameChat(0);
+                std::string person = regView->chooseChat(0);
                 std::shared_ptr<SecondaryUser> aPerson = std::make_shared<SecondaryUser>(person);
 
                 std::shared_ptr<Chat> aChat = std::make_shared<Chat>(aPerson, user);
@@ -133,8 +132,10 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                 tellInstructions(regView);
                 break;
             }
-            case Action::noAction:
+            case Action::noAction: {
+                regView->tellInstruction(2);
                 break;
+            }
             case Action::quit: {
                 regView->closeRegister();
                 return true;
@@ -150,7 +151,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                         }
                         case Action::select: {
                             regView->getChatList();
-                            std::string nameChat = regView->writeNameChat(1);
+                            std::string nameChat = regView->chooseChat(1);
 
                             bool found = reg->searchChat(nameChat);
                             if (!found)
@@ -164,7 +165,7 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             regView->tellCurrentChat(currentChat->getName());                                     // se la chat che si sta cercando non è nel registro si rimane nella chat dove ci si trovava
 
                             tellInstructions(regView);
-                            chatView->getMessages();
+                            chatView->getAllMessages();
                             if (currentChat->isBlocked())
                                 regView->tellStateChat(currentChat->getName(), 2, false);
                             break;
@@ -175,10 +176,11 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                                 reg->removeChat();
                                 currentChat = reg->getCurrent();
 
-                                regView->tellCurrentChat(currentChat->getName());
+                                if (currentChat != nullptr)
+                                    regView->tellCurrentChat(currentChat->getName());
                                 tellInstructions(regView);
                                 if (currentChat != nullptr) {
-                                    chatView->getMessages();
+                                    chatView->getAllMessages();
                                 }
                             }
                             break;
@@ -200,38 +202,57 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                             break;
                         }
                         case Action::find: {
-                            std::string s = chatView->writeResearchCommand();
-                            currentChat->searchMessages(s);
-                            chatView->getFoundMessages();
+                            if (currentChat->getMessQuantity() == 0)
+                                chatView->getAllMessages();
+                            else {
+                                std::string s = chatView->chooseResCommand();
+                                currentChat->searchMessages(s);
+                                chatView->getFoundMessages();
+                            }
                             break;
                         }
                         case Action::cancel: {
-                            std::string s = chatView->writeResearchCommand();
-                            bool req = currentChat->searchMessages(s);
+                            if (currentChat->getMessQuantity() == 0)
+                                chatView->getAllMessages();
+                            else {
+                                std::string s = chatView->chooseResCommand();
+                                bool goOn = currentChat->searchMessages(s);
+                                chatView->getFoundMessages();
 
-                            while (req) {
-                                std::string i = chatView->writeGeneralCommand();
-                                unsigned int n = convertInInt(i, false);
-                                req = currentChat->cancelMessage(n);
+                                while (goOn) {
+                                    std::string i = chatView->chooseGenCommand();
+                                    unsigned int n = convertInInt(i, false);
+
+                                    chatView->selectCase((int) n, 0);
+                                    goOn = currentChat->cancelMessage(n);
+                                }
                             }
                             break;
                         }
                         case Action::setImp: {
-                            std::string s = chatView->writeImportanceCommand();
-                            unsigned int n = convertInInt(s, true);
+                            if (currentChat->getMessQuantity() == 0)
+                                chatView->getAllMessages();
+                            else {
+                                std::string s = chatView->chooseImpCommand();
+                                unsigned int n = convertInInt(s, true);
 
-                            if (n == Max + 3) {
-                                std::string s = chatView->writeResearchCommand();
-                                bool req = currentChat->searchMessages(s);
+                                if (n == Max + 3) {
+                                    s = chatView->chooseResCommand();
+                                    bool goOn = currentChat->searchMessages(s);
+                                    chatView->getFoundMessages();
 
-                                do {
-                                    std::string i = chatView->writeGeneralCommand();
-                                    unsigned int m = convertInInt(i, false);
+                                    while (goOn) {
+                                        std::string i = chatView->chooseGenCommand();
+                                        unsigned int m = convertInInt(i, false);
 
-                                    req = currentChat->setMessImportance(m);
-                                } while (req);
-                            } else
-                                currentChat->setMessImportance(n);
+                                        chatView->selectCase((int) m, 1);
+                                        goOn = currentChat->setMessImportance(m);
+                                    }
+                                } else {
+                                    chatView->selectCase((int) n, 1);
+                                    currentChat->setMessImportance(n);
+                                }
+                            }
                             break;
                         }
                         case Action::write: {
@@ -240,6 +261,8 @@ bool doUserAction(std::shared_ptr<PrimaryUser> &user, Action &action, std::share
                         }
                     }
                 }
+                else
+                    regView->tellInstruction(2);
             }
         }
     }

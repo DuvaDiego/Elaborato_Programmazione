@@ -21,8 +21,12 @@ std::shared_ptr<Chat> Register::getChat(int number) const {
     return it.operator*();
 }
 
+int Register::getChatQuantity() const {
+    return chatQuantity;
+}
+
 bool Register::isEmpty() const {
-    if (chatList.empty())
+    if (chatQuantity == 0)
         return true;
     return false;
 }
@@ -30,7 +34,7 @@ bool Register::isEmpty() const {
 void Register::addInChatList(std::shared_ptr<Chat> &newChat) {
     auto it = chatList.begin();
     for (auto& chat : chatList) {
-        if (chat->getUser()->isFavourite())                                                                             // una nuova chat viene inserita dopo quelle preferite
+        if (chat->getUser()->isFavourite())                                                                             // Una nuova chat viene inserita dopo quelle preferite.
             it++;
         else
             break;
@@ -68,8 +72,8 @@ void Register::addInFavourites() {
         chatList.remove(currentChat);
         auto it = chatList.begin();
         for (auto &chat: chatList) {
-            if (chat->getUser()->isFavourite())                                                                         // una chat rimossa dai preferiti va portata
-                it++;                                                                                                   // in coda all'ultima chat preferita
+            if (chat->getUser()->isFavourite())                                                                         // Una chat rimossa dai preferiti va portata in coda all'ultima chat preferita.
+                it++;
             else
                 break;
         }
@@ -100,8 +104,4 @@ void Register::setCurrent(std::shared_ptr<Chat> newCurrent) {
 
 std::string Register::getOwner() const {
     return owner;
-}
-
-int Register::getChatQuantity() const {
-    return chatQuantity;
 }

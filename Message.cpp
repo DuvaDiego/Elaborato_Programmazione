@@ -55,28 +55,28 @@ void Message::setRecipient(std::string newRecipient) {
 }
 
 bool Message::isEqual(std::string word, std::string model) {
-    std::string capitalModel = model;                                                                                   // variante del modello con lettera maiuscola
+    std::string capitalModel = model;                                                                                   // Variante del modello con lettera maiuscola.
     int iMaiusc = (int) model.front() - 32;
     char lMaiusc = (char) iMaiusc;
     capitalModel.replace(0, 1, &lMaiusc);
     capitalModel.erase(1, 3);
 
-    std::string lowercaseModel = model;                                                                                 // variante del modello con lettera minuscola
+    std::string lowercaseModel = model;                                                                                 // Variante del modello con lettera minuscola.
     int iMinusc = (int) model.front() + 32;
     char lMinusc = (char) iMinusc;
     lowercaseModel.replace(0, 1, &lMinusc);
     lowercaseModel.erase(1, 3);
 
-    std::string simpleModel = model;                                                                                    // variante del modello con punteggiatura in fondo
+    std::string simpleModel = model;                                                                                    // Variante del modello con punteggiatura in fondo.
     simpleModel.pop_back();
 
-    std::string simpleCapitalModel = capitalModel;                                                                      // variante del modello con lettera maiuscola e punteggiatura in fondo
+    std::string simpleCapitalModel = capitalModel;                                                                      // Variante del modello con lettera maiuscola e punteggiatura in fondo.
     simpleCapitalModel.pop_back();
 
-    std::string simpleLowercaseModel = lowercaseModel;                                                                  // variante del modello con lettera minuscola e punteggiatura in fondo
+    std::string simpleLowercaseModel = lowercaseModel;                                                                  // Variante del modello con lettera minuscola e punteggiatura in fondo.
     simpleLowercaseModel.pop_back();
 
-    std::string simpleWord = word;
+    std::string simpleWord = word;                                                                                      // Variante della parola con punteggiatura in fondo.
     simpleWord.pop_back();
 
     if(word == model || word == capitalModel || word == lowercaseModel || word == simpleModel || word == simpleCapitalModel || word == simpleLowercaseModel)

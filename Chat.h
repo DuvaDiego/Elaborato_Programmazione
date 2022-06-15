@@ -20,6 +20,7 @@ public:
     void setBlock(bool newSetup);
 
     std::shared_ptr<Message> getMessage(int number) const;
+    std::shared_ptr<Message> getSavedMessage(int number) const;
     std::shared_ptr<Message> getFoundMessage(int number) const;
 
     void writeMessage(std::shared_ptr<Message>& newMessage);
@@ -33,17 +34,18 @@ public:
     std::shared_ptr<User> getWriter() const;
     void setWriter(std::shared_ptr<User> newWriter);
 
-    int getMessageQuantity() const;
+    int getMessQuantity() const;
+    int getSavedQuantity() const;
     int getFoundQuantity() const;
 
 private:
     std::string nameChat;
-    bool blocked;
-    std::list<std::shared_ptr<Message>> savedMessage;
+    bool block;
     std::list<std::shared_ptr<Message>> messagesList;
+    std::list<std::shared_ptr<Message>> savedMessage;
     std::list<std::shared_ptr<Message>> messagesFound;
-    int maxSavedMessage = Max;
     int quantity;
+    int quantitySaved;
     int quantityFound;
     std::shared_ptr<SecondaryUser> user;
     std::shared_ptr<User> writer;

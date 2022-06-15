@@ -13,13 +13,13 @@ public:
 
     void tellInstruction(int parameter);
 
-    std::string writeNameChat(int parameter);
+    std::string chooseChat(int parameter);
     void getChatList();
     void tellCurrentChat(std::string name);
     void tellStateChat(std::string name, int parameter, bool parValue);
-    void closeRegister();
 
     std::shared_ptr<Register> getRegister();
+    void closeRegister();
 
 private:
     std::shared_ptr<Register> aRegister;

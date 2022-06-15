@@ -13,10 +13,13 @@ public:
     ~Register();
 
     std::shared_ptr<Chat> getChat(int number) const;
+    int getChatQuantity() const;
     bool isEmpty() const;
+
     void addInChatList(std::shared_ptr<Chat>& newChat);
     void removeChat();
     bool searchChat(std::string& nameChat);
+
     void addInFavourites();
     void blockChat();
 
@@ -24,8 +27,6 @@ public:
     void setCurrent(std::shared_ptr<Chat> newCurrent);
 
     std::string getOwner() const;
-
-    int getChatQuantity() const;
 
 private:
     std::list<std::shared_ptr<Chat>> chatList;

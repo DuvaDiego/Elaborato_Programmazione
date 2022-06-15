@@ -3,25 +3,26 @@
 
 #include <iostream>
 #include <memory>
-#include "Message.h"
 #include "Chat.h"
+#include "Message.h"
 
 class ChatView {
 public:
     explicit ChatView(std::shared_ptr<Chat> c);
     ~ChatView() = default;
 
-    void writeMessage(std::shared_ptr<Message> &m);
-    void getMessages();
-
-    std::string writeResearchCommand();
+    void writeTextMessage(std::shared_ptr<Message> &m);
+    void getAllMessages();
+    void getSavedMessages();
     void getFoundMessages();
 
-    std::string writeGeneralCommand();
-    void selectionCase(int parameter, unsigned int messageQuantity);
-    std::string writeImportanceCommand();
+    std::string chooseGenCommand();
+    std::string chooseResCommand();
+    std::string chooseImpCommand();
 
-    void associateChat(std::shared_ptr<Chat> newChat);
+    void selectCase(int n, int parameter);
+
+    void associateChat(std::shared_ptr<Chat>& newChat);
 
 private:
     std::shared_ptr<Chat> aChat;
